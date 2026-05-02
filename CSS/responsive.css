@@ -346,7 +346,7 @@
 
     .search-area {
 
-        margin-top: 140px;
+        margin-top: 170px;
 
     }
 
@@ -355,7 +355,20 @@
     .login {
 
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        margin-top: 12px;
 
+    }
+
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        margin: 20px 0 0;
+        flex: 0 0 36px;
     }
 
 
@@ -363,6 +376,7 @@
     .user-icon {
 
         bottom: 10px;
+        margin-top: 15px;
 
     }
 
@@ -370,7 +384,7 @@
 
     .sg-user-name {
 
-        margin-top: 12px;
+        margin-top: 15px;
 
     }
 
@@ -379,6 +393,7 @@
     .sg-btn {
 
         margin-top: 20px;
+        margin-left: 30px;
 
     }
 
@@ -414,7 +429,7 @@
 
         height: 2px;
 
-        background-color: rgba(255, 255, 255, 0.609);
+        background-color: rgba(0, 0, 0, 0.8);
 
         transition: width 0.3s ease;
 

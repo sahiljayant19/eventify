@@ -1,10 +1,40 @@
 // Variables are defined in variables.js (loaded before this file)
-import { toggleNav, menu, nav, myBookingLink, homeLink, aboutLink, supportLink, authModal, registerView, loginView, toLogin, toRegister, closeModal, signInBtn, signOutBtn, userDisplayName, authBox, registerName, registerEmail, registerBtn, registerPassword, loginEmail, loginPassword, loginBtn, show_el, hide_el } from './variables.js';
+import { toggleNav, menu, nav, myBookingLink, homeLink, aboutLink, supportLink, themeToggle, authModal, registerView, loginView, toLogin, toRegister, closeModal, signInBtn, signOutBtn, userDisplayName, userIcon, authBox, registerName, registerEmail, registerBtn, registerPassword, loginEmail, loginPassword, loginBtn, show_el, hide_el } from './variables.js';
 
 // Get mobile navigation links element
 const mobileNavLinks = document.querySelector('.mobile-nav-links');
 
 let menuClicked = false;
+const THEME_STORAGE_KEY = 'eventifyTheme';
+
+function getPreferredTheme() {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    if (themeToggle) {
+        const nextTheme = theme === 'dark' ? 'light' : 'dark';
+        themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+        themeToggle.title = `Switch to ${nextTheme} mode`;
+    }
+}
+
+applyTheme(getPreferredTheme());
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const activeTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+        const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        applyTheme(nextTheme);
+    });
+}
 
 // Clear all authentication form fields for security
 function clearAuthFields() {
@@ -267,10 +297,11 @@ loginBtn.addEventListener('click', () => {
             return res.json();
         })
         .then((data) => {
-            const displayName = data.username || data.email;
+            const user = data.user || data;
+            const displayName = user.username || user.email;
             showPopupMessage('Login Successful!', `Welcome back, ${displayName}!`, 'success');
             // store basic user info in localStorage (no JWT yet)
-            localStorage.setItem('eventifyUser', JSON.stringify(data));
+            localStorage.setItem('eventifyUser', JSON.stringify(user));
             // update navbar: hide sign in, show name + sign out + user icon
             signInBtn.style.display = 'none';
             userDisplayName.textContent = displayName;
@@ -404,209 +435,70 @@ bookingForm.addEventListener('submit', async (e) => {
 // Show themed popup message
 function showPopupMessage(title, message, type = 'success', callback = null) {
     // Remove any existing popup and overlay
-    const existingPopup = document.querySelector('.payment-popup');
+    const existingPopup = document.querySelector('.eventify-popup');
     const existingOverlay = document.querySelector('.popup-overlay');
-    if (existingPopup) {
-        existingPopup.remove();
-    }
-    if (existingOverlay) {
-        existingOverlay.remove();
-    }
+    if (existingPopup) existingPopup.remove();
+    if (existingOverlay) existingOverlay.remove();
 
-    // Create blur overlay
+    // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 10000;
-        animation: fadeIn 0.3s ease-out;
-    `;
-
-    const popup = document.createElement('div');
-    popup.className = 'payment-popup';
-
-    const bgColor = type === 'success'
-        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
 
     const icon = type === 'success'
-        ? '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>'
-        : '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
 
-    popup.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 47%;
-        transform: translate(-50%, -50%);
-        background: ${bgColor};
-        color: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        z-index: 10001;
-        text-align: center;
-        min-width: 280px;
-        animation: slideIn 0.3s ease-out;
-    `;
+    const popup = document.createElement('div');
+    popup.className = 'eventify-popup';
 
     popup.innerHTML = `
-        <div style="margin-bottom: 25px;">
-            <svg width="70" height="70" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px;">
-                ${icon}
-            </svg>
-            <h3 style="margin: 0; font-size: 1.8em; font-weight: 600;">${title}</h3>
+        <div class="popup-icon-container ${type}">
+            ${icon}
         </div>
-        <p style="margin: 20px 0; line-height: 1.6; font-size: 1.2em;">
-            ${message}
-        </p>
-        <button class="popup-ok-btn" style="
-            margin-top: 25px;
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #f4385d, #e03452);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1.2em;
-            box-shadow: 0 5px 15px rgba(244, 56, 93, 0.3);
-            transition: all 0.3s ease;
-        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 56, 93, 0.4)'" 
-           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 56, 93, 0.3)'">OK</button>
+        <h3>${title}</h3>
+        <p>${message}</p>
+        <div class="popup-button-group">
+            <button class="popup-btn popup-btn-primary">OK</button>
+        </div>
     `;
 
     // Add click handler to OK button
-    const okButton = popup.querySelector('.popup-ok-btn');
+    const okButton = popup.querySelector('.popup-btn-primary');
     okButton.addEventListener('click', () => {
         popup.remove();
         overlay.remove();
-        if (callback) {
-            callback();
-        }
+        if (callback) callback();
     });
 
-    // Add animation style if not already added
-    if (!document.getElementById('popup-animation-style')) {
-        const style = document.createElement('style');
-        style.id = 'popup-animation-style';
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translate(-50%, -50%) scale(0.8);
-                }
-                to {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
     // Add overlay and popup to body
+    overlay.appendChild(popup);
     document.body.appendChild(overlay);
-    document.body.appendChild(popup);
 }
 
 // Show sign out confirmation popup
 function showSignOutConfirmation() {
     // Remove any existing popup and overlay
-    const existingPopup = document.querySelector('.payment-popup');
+    const existingPopup = document.querySelector('.eventify-popup');
     const existingOverlay = document.querySelector('.popup-overlay');
-    if (existingPopup) {
-        existingPopup.remove();
-    }
-    if (existingOverlay) {
-        existingOverlay.remove();
-    }
+    if (existingPopup) existingPopup.remove();
+    if (existingOverlay) existingOverlay.remove();
 
-    // Create blur overlay
+    // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 10000;
-        animation: fadeIn 0.3s ease-out;
-    `;
 
     const popup = document.createElement('div');
-    popup.className = 'payment-popup';
-
-    popup.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 47%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        z-index: 10001;
-        text-align: center;
-        min-width: 280px;
-        animation: slideIn 0.3s ease-out;
-    `;
+    popup.className = 'eventify-popup';
 
     popup.innerHTML = `
-        <div style="margin-bottom: 25px;">
-            <svg width="70" height="70" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px;">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
-            <h3 style="margin: 0; font-size: 1.8em; font-weight: 600;">Sign Out</h3>
+        <div class="popup-icon-container error">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         </div>
-        <p style="margin: 20px 0; line-height: 1.6; font-size: 1.2em;">
-            Do you really want to sign out? You'll need to log in again to access your account.
-        </p>
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
-            <button class="cancel-signout-btn" style="
-                padding: 15px 30px;
-                background: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 1.2em;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" 
-               onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">Cancel</button>
-            <button class="confirm-signout-btn" style="
-                padding: 15px 30px;
-                background: linear-gradient(45deg, #f4385d, #e03452);
-                color: white;
-                border: none;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 1.2em;
-                box-shadow: 0 5px 15px rgba(244, 56, 93, 0.3);
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 56, 93, 0.4)'" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 56, 93, 0.3)'">Sign Out</button>
+        <h3>Sign Out</h3>
+        <p>Do you really want to sign out? You'll need to log in again to access your account.</p>
+        <div class="popup-button-group">
+            <button class="popup-btn popup-btn-secondary cancel-signout-btn">Cancel</button>
+            <button class="popup-btn popup-btn-danger confirm-signout-btn">Sign Out</button>
         </div>
     `;
 
@@ -625,36 +517,8 @@ function showSignOutConfirmation() {
         proceedWithSignOut();
     });
 
-    // Add animation style if not already added
-    if (!document.getElementById('popup-animation-style')) {
-        const style = document.createElement('style');
-        style.id = 'popup-animation-style';
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translate(-50%, -50%) scale(0.8);
-                }
-                to {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // Add overlay and popup to body
+    overlay.appendChild(popup);
     document.body.appendChild(overlay);
-    document.body.appendChild(popup);
 }
 
 // Proceed with sign out
@@ -669,3 +533,45 @@ function proceedWithSignOut() {
     // Show success message
     showPopupMessage('Signed Out', 'You have been successfully signed out.', 'success');
 }
+// Genre Filtering Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const genreFilters = document.querySelectorAll('.genre-filter');
+    const eventCards = document.querySelectorAll('.event-card');
+    const movieHeading = document.querySelector('.movie-heading');
+
+    if (genreFilters.length > 0 && eventCards.length > 0) {
+        genreFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                const selectedGenre = filter.getAttribute('data-genre');
+
+                // Update active state in nav
+                genreFilters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+
+                // Update heading
+                if (movieHeading) {
+                    movieHeading.textContent = selectedGenre === 'all'
+                        ? 'Recommended Events'
+                        : `${selectedGenre} Events`;
+                }
+
+                // Filter cards
+                eventCards.forEach(card => {
+                    const tagEl = card.querySelector('.tag');
+                    if (!tagEl) return;
+
+                    const cardTag = tagEl.textContent.trim();
+
+                    if (selectedGenre === 'all' || cardTag.toLowerCase() === selectedGenre.toLowerCase()) {
+                        card.style.display = 'block';
+                        // Add fade-in animation
+                        card.style.animation = 'fadeIn 0.5s ease forwards';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+            });
+        });
+    }
+});

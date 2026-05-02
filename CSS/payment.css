@@ -1,4 +1,38 @@
 /* Payment Page Styles */
+
+/* Navbar styling for Payment Page */
+.navbar {
+    background: var(--surface-bg);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.navbar>:first-child img {
+    position: absolute;
+    top: -20px;
+    filter: none !important;
+}
+
+.nav-simple a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft);
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="dark"] .nav-simple a {
+    background: var(--surface-muted);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+:root[data-theme="dark"] .nav-simple a:hover {
+    background: var(--accent);
+    color: var(--button-text);
+}
+
 .payment-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -10,10 +44,10 @@
     display: flex;
     justify-content: center;
     margin-bottom: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--surface-muted);
     padding: 20px;
     border-radius: 15px;
-    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-muted);
 }
 
 .progress-step {
@@ -32,7 +66,7 @@
     left: 50%;
     width: 100%;
     height: 2px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--border-muted);
     transform: translateX(50%);
 }
 
@@ -44,8 +78,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: var(--surface-bg);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,25 +87,29 @@
     margin-bottom: 8px;
     z-index: 1;
     position: relative;
+    border: 1px solid var(--border-muted);
 }
 
 .progress-step.completed .step-number {
     background: #28a745;
+    color: white;
+    border-color: #28a745;
 }
 
 .progress-step.active .step-number {
-    background: #f4385d;
-    box-shadow: 0 0 20px rgba(244, 56, 93, 0.5);
+    background: var(--accent);
+    color: var(--button-text);
+    box-shadow: 0 0 20px rgba(0, 102, 204, 0.3);
 }
 
 .progress-step span {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     font-size: 0.9em;
     text-align: center;
 }
 
 .progress-step.active span {
-    color: white;
+    color: var(--accent);
     font-weight: bold;
 }
 
@@ -85,50 +123,51 @@
 
 /* Booking Summary */
 .booking-summary {
-    background: white;
+    background: var(--surface-bg);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-soft);
 }
 
 .booking-summary h2 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 20px;
     font-size: 1.5em;
 }
 
 .summary-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: var(--surface-muted);
     border-radius: 15px;
     padding: 25px;
-    border-left: 5px solid #f4385d;
+    border-left: 5px solid var(--accent);
 }
 
 .event-info h3 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 10px;
     font-size: 1.3em;
 }
 
 .event-meta {
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 15px;
     font-size: 1em;
 }
 
 .booking-id {
-    color: #888;
+    color: var(--text-muted);
     font-size: 0.9em;
     margin-bottom: 20px;
 }
 
 .booking-id span {
     font-weight: bold;
-    color: #f4385d;
+    color: var(--accent);
 }
 
 .ticket-details {
-    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    border-top: 2px solid var(--border-soft);
     padding-top: 20px;
 }
 
@@ -136,37 +175,39 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 .ticket-row.total {
     font-weight: bold;
     font-size: 1.1em;
-    color: #333;
-    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+    border-top: 2px solid var(--border-soft);
     padding-top: 12px;
     margin-top: 12px;
 }
 
 /* Payment Methods */
 .payment-methods {
-    background: white;
+    background: var(--surface-bg);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-soft);
 }
 
 .payment-methods-show {
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
     gap: 10px 0;
+    border: 1px solid var(--border-soft);
 }
 
 .payment-methods h2 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 25px;
     font-size: 1.5em;
 }
@@ -176,7 +217,7 @@
     display: flex;
     gap: 10px;
     margin-bottom: 30px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-muted);
 }
 
 .tab-btn {
@@ -186,7 +227,7 @@
     padding: 15px 20px;
     border: none;
     background: none;
-    color: #666;
+    color: var(--text-secondary);
     cursor: pointer;
     border-radius: 10px 10px 0 0;
     transition: all 0.3s ease;
@@ -195,19 +236,23 @@
 }
 
 .tab-btn:hover {
-    background: #f8f9fa;
-    color: #333;
+    background: var(--surface-muted);
+    color: var(--text-primary);
 }
 
 .tab-btn.active {
-    color: #f4385d;
-    background: linear-gradient(135deg, rgba(244, 56, 93, 0.1) 0%, rgba(224, 52, 82, 0.1) 100%);
-    border-bottom: 3px solid #f4385d;
+    color: var(--accent);
+    background: var(--surface-muted);
+    border-bottom: 3px solid var(--accent);
 }
 
 .payment-icon {
     width: 20px;
     height: 20px;
+}
+
+:root[data-theme="dark"] .payment-icon {
+    filter: invert(1);
 }
 
 /* Payment Content Sections */
@@ -221,7 +266,7 @@
 
 /* UPI/QR Code Section */
 .qr-section h3 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 25px;
     text-align: center;
     font-size: 1.3em;
@@ -233,16 +278,17 @@
     align-items: center;
     margin-bottom: 30px;
     padding: 30px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: var(--surface-muted);
     border-radius: 15px;
 }
 
 .qr-code {
-    background: white;
+    background: var(--surface-bg);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
     text-align: center;
+    border: 1px solid var(--border-soft);
 }
 
 .qr-details {
@@ -251,13 +297,13 @@
 
 .upi-id {
     font-size: 1.1em;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
 .amount {
     font-size: 1.2em;
-    color: #f4385d;
+    color: var(--accent);
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -267,8 +313,8 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    color: white;
+    background: linear-gradient(45deg, var(--accent), var(--accent-hover));
+    color: var(--button-text);
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -278,7 +324,7 @@
 
 .copy-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
 }
 
 .copy-btn img {
@@ -288,19 +334,19 @@
 
 /* Payment Instructions */
 .payment-instructions {
-    background: #f8f9fa;
+    background: var(--surface-muted);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 25px;
 }
 
 .payment-instructions h4 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 15px;
 }
 
 .payment-instructions ol {
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.6;
     padding-left: 20px;
 }
@@ -313,9 +359,9 @@
 .payment-status {
     text-align: center;
     padding: 20px;
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+    background: var(--surface-muted);
     border-radius: 10px;
-    border: 2px solid rgba(255, 193, 7, 0.3);
+    border: 2px solid var(--accent);
 }
 
 .status-pending {
@@ -323,14 +369,14 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
-    color: #ff6b35;
+    color: var(--accent);
 }
 
 .spinner {
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(255, 107, 53, 0.3);
-    border-top: 3px solid #ff6b35;
+    border: 3px solid rgba(0, 102, 204, 0.3);
+    border-top: 3px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -351,7 +397,7 @@
 
 .input-group label {
     display: block;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 8px;
     font-weight: 500;
 }
@@ -360,17 +406,19 @@
 .input-group select {
     width: 100%;
     padding: 15px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-muted);
     border-radius: 10px;
     font-size: 1em;
     transition: all 0.3s ease;
+    background: var(--surface-bg);
+    color: var(--text-primary);
 }
 
 .input-group input:focus,
 .input-group select:focus {
     outline: none;
-    border-color: #f4385d;
-    box-shadow: 0 0 10px rgba(244, 56, 93, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0, 102, 204, 0.1);
 }
 
 .input-row {
@@ -384,7 +432,7 @@
     align-items: center;
     gap: 15px;
     margin: 25px 0;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .card-types {
@@ -403,24 +451,28 @@
     opacity: 1;
 }
 
+:root[data-theme="dark"] .card-type {
+    filter: invert(1);
+}
+
 /* Pay Button */
 .pay-btn {
     width: 100%;
     padding: 18px;
-    background: linear-gradient(45deg, #f4385d, #e03452);
-    color: white;
+    background: linear-gradient(45deg, var(--accent), var(--accent-hover));
+    color: var(--button-text);
     border: none;
     border-radius: 30px;
     font-size: 1.1em;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(244, 56, 93, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
 }
 
 .pay-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(244, 56, 93, 0.4);
+    box-shadow: 0 15px 40px rgba(0, 102, 204, 0.4);
 }
 
 /* Net Banking */
@@ -429,11 +481,11 @@
 }
 
 .bank-info {
-    background: #f8f9fa;
+    background: var(--surface-muted);
     padding: 15px;
     border-radius: 10px;
     margin: 20px 0;
-    color: #666;
+    color: var(--text-secondary);
     text-align: center;
 }
 
@@ -491,4 +543,45 @@
         align-items: center;
         text-align: center;
     }
+
+    /* Mobile navbar fixes */
+    .navbar {
+        position: relative;
+        min-height: 80px;
+        padding: 10px;
+    }
+
+    .navbar > a:first-child {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+
+    .navbar > a:first-child img {
+        width: 120px;
+        height: auto;
+        position: static;
+        top: auto;
+    }
+
+    .nav-simple {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .nav-simple a {
+        padding: 8px 12px;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+}
+
+/* Footer Icons Dark Theme Support */
+:root[data-theme="dark"] .social-icon svg {
+    filter: invert(1);
+}
+
+:root[data-theme="dark"] .app-btn svg {
+    filter: invert(1);
 }

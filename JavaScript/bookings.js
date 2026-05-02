@@ -134,11 +134,11 @@ async function viewTicket(bookingId) {
         // Populate ticket modal with booking details
         populateTicketModal(booking);
         
-        // Generate QR code for the ticket
-        generateTicketQRCode(booking);
-        
         // Show the modal
         showTicketModal();
+        
+        // Generate QR code for the ticket (after showing to ensure container is ready)
+        generateTicketQRCode(booking);
         
     } catch (error) {
         console.error('Error viewing ticket:', error);
@@ -270,19 +270,31 @@ function generateTicketQRCode(booking) {
     // Clear existing QR code
     qrContainer.innerHTML = '';
     
-    // Create ticket data for QR code
-    const ticketData = {
-        bookingId: booking.bookingId || booking.id,
-        eventName: booking.eventName,
-        tickets: booking.tickets,
-        customerEmail: JSON.parse(localStorage.getItem('eventifyUser'))?.email,
-        timestamp: booking.timestamp
-    };
-    
-    // Convert to JSON string for QR code
-    const qrText = JSON.stringify(ticketData);
-    
     try {
+        // Get user info safely
+        const userStr = localStorage.getItem('eventifyUser');
+        let userEmail = 'N/A';
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                userEmail = user.email || 'N/A';
+            } catch (e) {
+                console.error('Error parsing user data for QR code:', e);
+            }
+        }
+
+        // Create ticket data for QR code
+        const ticketData = {
+            bookingId: booking.bookingId || booking.id || 'N/A',
+            eventName: booking.eventName || 'Event',
+            tickets: booking.tickets || 1,
+            customerEmail: userEmail,
+            timestamp: booking.timestamp || new Date().toISOString()
+        };
+        
+        // Convert to JSON string for QR code
+        const qrText = JSON.stringify(ticketData);
+        
         // Check if QRCode library is available
         if (typeof QRCode !== 'undefined') {
             new QRCode(qrContainer, {
@@ -291,20 +303,25 @@ function generateTicketQRCode(booking) {
                 height: 180,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
+                correctLevel: 1 // Using numeric value for CorrectLevel.H (H=2, Q=3, M=0, L=1 - wait, L=1, M=0, Q=3, H=2 is common but let's be safe)
             });
+            // Note: If QRCode.CorrectLevel is undefined, we use a number or the fallback
         } else {
+            console.warn('QRCode library not found, using fallback');
             // Fallback to Google Charts API
             const img = document.createElement('img');
             img.src = `https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=${encodeURIComponent(qrText)}&choe=UTF-8`;
             img.alt = 'Ticket QR Code';
             img.style.border = '1px solid #ddd';
-            img.borderRadius = '8px';
+            img.style.borderRadius = '8px';
             qrContainer.appendChild(img);
         }
     } catch (error) {
-        console.error('Error generating QR code:', error);
-        qrContainer.innerHTML = '<p style="color: #666;">QR Code unavailable</p>';
+        console.error('Error in generateTicketQRCode:', error);
+        qrContainer.innerHTML = `<div style="padding: 20px; color: #ef4444; font-size: 0.9rem;">
+            <p>QR Code generation failed</p>
+            <small>${error.message}</small>
+        </div>`;
     }
 }
 
@@ -425,11 +442,11 @@ function generateTicketHTML(booking) {
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
         .ticket { max-width: 600px; margin: 0 auto; background: white; border: 2px solid #ddd; border-radius: 10px; overflow: hidden; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; padding: 20px; text-align: center; }
         .header h1 { margin: 0; font-size: 24px; }
         .content { padding: 20px; }
         .section { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
-        .section h3 { margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #667eea; padding-bottom: 5px; }
+        .section h3 { margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 5px; }
         .row { display: flex; justify-content: space-between; margin-bottom: 8px; }
         .label { font-weight: bold; color: #666; }
         .value { color: #333; }
@@ -562,86 +579,27 @@ async function cancelBooking(bookingId) {
 // Show cancellation confirmation popup
 function showCancelConfirmationPopup(bookingId) {
     // Remove any existing popup
-    const existingPopup = document.querySelector('.payment-popup');
+    const existingPopup = document.querySelector('.eventify-popup');
     const existingOverlay = document.querySelector('.popup-overlay');
-    if (existingPopup) {
-        existingPopup.remove();
-    }
-    if (existingOverlay) {
-        existingOverlay.remove();
-    }
+    if (existingPopup) existingPopup.remove();
+    if (existingOverlay) existingOverlay.remove();
     
-    // Create blur overlay
+    // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 10000;
-        animation: fadeIn 0.3s ease-out;
-    `;
     
     const popup = document.createElement('div');
-    popup.className = 'payment-popup';
-    
-    popup.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        z-index: 10001;
-        text-align: center;
-        min-width: 280px;
-        animation: slideIn 0.3s ease-out;
-    `;
+    popup.className = 'eventify-popup';
     
     popup.innerHTML = `
-        <div style="margin-bottom: 25px;">
-            <svg width="70" height="70" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px;">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
-            <h3 style="margin: 0; font-size: 1.8em; font-weight: 600;">Cancel Booking</h3>
+        <div class="popup-icon-container error">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         </div>
-        <p style="margin: 20px 0; line-height: 1.6; font-size: 1.2em;">
-            Are you sure you want to cancel booking #${bookingId}? This action cannot be undone.
-        </p>
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
-            <button class="cancel-btn-popup" style="
-                padding: 15px 30px;
-                background: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 1.2em;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" 
-               onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">No, Keep Booking</button>
-            <button class="confirm-cancel-btn" style="
-                padding: 15px 30px;
-                background: linear-gradient(45deg, #f4385d, #e03452);
-                color: white;
-                border: none;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 1.2em;
-                box-shadow: 0 5px 15px rgba(244, 56, 93, 0.3);
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 56, 93, 0.4)'" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 56, 93, 0.3)'">Yes, Cancel Booking</button>
+        <h3>Cancel Booking</h3>
+        <p>Are you sure you want to cancel booking #${bookingId}? This action cannot be undone.</p>
+        <div class="popup-button-group">
+            <button class="popup-btn popup-btn-secondary cancel-btn-popup">No, Keep Booking</button>
+            <button class="popup-btn popup-btn-danger confirm-cancel-btn">Yes, Cancel Booking</button>
         </div>
     `;
     
@@ -660,36 +618,8 @@ function showCancelConfirmationPopup(bookingId) {
         proceedWithCancellation(bookingId);
     });
     
-    // Add animation style if not already added
-    if (!document.getElementById('popup-animation-style')) {
-        const style = document.createElement('style');
-        style.id = 'popup-animation-style';
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translate(-50%, -50%) scale(0.8);
-                }
-                to {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Add overlay and popup to body
+    overlay.appendChild(popup);
     document.body.appendChild(overlay);
-    document.body.appendChild(popup);
 }
 
 // Proceed with actual cancellation
@@ -706,76 +636,37 @@ async function proceedWithCancellation(bookingId) {
             throw new Error('Failed to cancel booking');
         }
 
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+
         // Show success message with refund information
         const successMessage = document.createElement('div');
-        successMessage.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            z-index: 10001;
-            text-align: center;
-            min-width: 450px;
-            animation: slideIn 0.3s ease-out;
-        `;
+        successMessage.className = 'eventify-popup';
+        successMessage.style.maxWidth = '500px';
         
         successMessage.innerHTML = `
-            <div style="margin-bottom: 25px;">
-                <svg width="70" height="70" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px;">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                </svg>
-                <h3 style="margin: 0; font-size: 1.8em; font-weight: 600;">Booking Cancelled Successfully!</h3>
+            <div class="popup-icon-container success">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
-            <p style="margin: 20px 0; line-height: 1.6; font-size: 1.2em;">
-                Your booking #${bookingId} has been cancelled.
-            </p>
-            <div style="background: rgba(255, 255, 255, 0.15); padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid rgba(255, 255, 255, 0.3);">
-                <p style="margin: 0; font-size: 1.1em;">
+            <h3>Booking Cancelled Successfully!</h3>
+            <p>Your booking #${bookingId} has been cancelled.</p>
+            <div style="background: var(--surface-muted); padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid var(--accent); text-align: left;">
+                <p style="margin: 0; font-size: 15px; color: var(--text-primary);">
                     <strong>Refund Information:</strong><br>
                     Your payment will be refunded to your original payment method within 5-7 business days.
                 </p>
             </div>
-            <p style="margin: 20px 0 0 0; font-size: 1.1em; opacity: 0.9;">
+            <p style="margin: 20px 0 0 0; font-size: 14px; opacity: 0.8;">
                 A confirmation email has been sent to your registered email address.
             </p>
-            <button onclick="this.parentElement.remove()" style="
-                margin-top: 25px;
-                padding: 15px 30px;
-                background: linear-gradient(45deg, #f4385d, #e03452);
-                color: white;
-                border: none;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 1.2em;
-                box-shadow: 0 5px 15px rgba(244, 56, 93, 0.3);
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 56, 93, 0.4)'" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 56, 93, 0.3)'">OK</button>
+            <div class="popup-button-group">
+                <button class="popup-btn popup-btn-primary" onclick="this.closest('.popup-overlay').remove()">OK</button>
+            </div>
         `;
         
-        // Add animation style
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translate(-50%, -50%) scale(0.8);
-                }
-                to {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        document.body.appendChild(successMessage);
+        overlay.appendChild(successMessage);
+        document.body.appendChild(overlay);
         
         // Reload bookings after a short delay
         setTimeout(() => {

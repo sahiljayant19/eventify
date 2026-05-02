@@ -6,27 +6,30 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 10000;
     overflow-y: auto;
 }
 
 .ticket-modal-content {
-    background: white;
-    max-width: 1000px;
-    margin: 20px auto;
-    border-radius: 10px 0 0 10px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: var(--surface-bg);
+    max-width: 700px;
+    margin: 40px auto;
+    border-radius: 20px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    font-size: 2em;
-    height: 90vh;
-    overflow: scroll;
+    font-size: 1.2rem;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .ticket-modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--accent);
+    color: var(--button-text);
     padding: 25px 30px;
     display: flex;
     justify-content: space-between;
@@ -42,7 +45,7 @@
 .close-ticket-modal {
     background: none;
     border: none;
-    color: white;
+    color: var(--button-text);
     font-size: 2em;
     cursor: pointer;
     width: 40px;
@@ -60,22 +63,24 @@
 
 .ticket-body {
     padding: 30px;
-    background: #f8f9fa;
+    background: var(--surface-muted);
+    overflow-y: auto;
+    flex: 1;
 }
 
 .ticket-section {
-    background: white;
+    background: var(--surface-bg);
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-left: 4px solid #667eea;
+    border-left: 4px solid var(--accent);
 }
 
 .ticket-section h3 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 20px;
-    font-size: 1.3em;
+    font-size: 1.5em;
     font-weight: 600;
 }
 
@@ -90,7 +95,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-muted);
 }
 
 .ticket-row:last-child {
@@ -98,24 +103,24 @@
 }
 
 .ticket-row .label {
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 500;
-    font-size: 0.95em;
+    font-size: 1em;
 }
 
 .ticket-row .value {
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
     text-align: right;
 }
 
 .ticket-row .booking-id {
-    color: #667eea;
+    color: var(--accent);
     font-size: 1.1em;
 }
 
 .ticket-row.total-row {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-muted));
     padding: 15px;
     border-radius: 10px;
     margin-top: 10px;
@@ -125,7 +130,7 @@
 .ticket-row.total-row .label,
 .ticket-row.total-row .value {
     font-size: 1.1em;
-    color: #667eea;
+    color: var(--accent);
 }
 
 .status-completed {
@@ -149,29 +154,29 @@
 }
 
 .ticket-qr-code {
-    background: white;
+    background: var(--surface-bg);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-soft);
 }
 
 .qr-instruction {
-    color: #666;
-    font-size: 0.9em;
+    color: var(--text-secondary);
+    font-size: 1em;
     margin: 0;
 }
 
 /* Instructions Section */
 .instructions {
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+    background: color-mix(in srgb, #ffc107 8%, var(--surface-muted));
     border-left-color: #ffc107;
 }
 
 .instructions ul {
     margin: 0;
     padding-left: 20px;
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.6;
 }
 
@@ -181,12 +186,12 @@
 
 /* Ticket Modal Footer */
 .ticket-modal-footer {
-    background: #f8f9fa;
+    background: var(--surface-muted);
     padding: 20px 30px;
     display: flex;
     gap: 15px;
     justify-content: center;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--border-soft);
 }
 
 .download-ticket-btn,
@@ -205,31 +210,33 @@
 }
 
 .download-ticket-btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: white;
+    background: #28a745;
+    color: var(--button-text);
 }
 
 .download-ticket-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    background: #218838;
 }
 
 .print-ticket-btn {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    color: white;
+    background: var(--accent);
+    color: var(--button-text);
 }
 
 .print-ticket-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+    background: var(--accent-hover);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .ticket-modal-content {
-        margin: 60px 0;
-        height: 80vh;
-        overflow: scroll;
+        margin: 20px 10px;
+        max-height: 90vh;
+        width: calc(100% - 20px);
     }
     
     .ticket-modal-header {

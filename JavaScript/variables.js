@@ -2,10 +2,12 @@
 const toggleNav = document.getElementById('tgl');
 const menu = document.getElementById('menu');
 const nav = document.getElementById('nav');
+const search = document.getElementById('search');
 const myBookingLink = document.getElementById('myBookingLink');
 const homeLink = document.getElementById('homeLink')
 const aboutLink = document.getElementById('aboutLink')
 const supportLink = document.getElementById('supportLink')
+const themeToggle = document.getElementById('themeToggle');
 
 // Auth modal & views
 const authModal = document.getElementById('authModal');
@@ -19,6 +21,7 @@ const closeModal = document.getElementById('closeModal');
 const signInBtn = document.getElementById('signInBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 const userDisplayName = document.getElementById('userDisplayName');
+const userIcon = document.getElementById('userIcon');
 const authBox = document.getElementById('authBox');
 
 const registerName = document.getElementById('registerName');
@@ -36,4 +39,4 @@ const loginBtn = document.getElementById('loginBtn');
 const show_el = [search, signInBtn, userDisplayName, signOutBtn, myBookingLink, homeLink, aboutLink, supportLink];
 const hide_el = [toggleNav, search, signInBtn, userDisplayName, signOutBtn];
 
-export { toggleNav, menu, nav, myBookingLink, homeLink, aboutLink, supportLink, authModal, registerView, loginView, toLogin, toRegister, closeModal, signInBtn, signOutBtn, userDisplayName, authBox, registerName, registerEmail, registerBtn, registerPassword, loginEmail, loginPassword, loginBtn, show_el, hide_el };
+export { toggleNav, menu, nav, search, myBookingLink, homeLink, aboutLink, supportLink, themeToggle, authModal, registerView, loginView, toLogin, toRegister, closeModal, signInBtn, signOutBtn, userDisplayName, userIcon, authBox, registerName, registerEmail, registerBtn, registerPassword, loginEmail, loginPassword, loginBtn, show_el, hide_el };

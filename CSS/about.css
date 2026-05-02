@@ -1,30 +1,59 @@
 /* About Page Specific Styles */
 
+/* Navbar styling for About Page */
+.navbar {
+    background: var(--surface-bg);
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 20px;
+    height: 64px;
+}
+
+.navbar .logo img {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+
 /* Simplified Navigation for About Page */
 .nav-simple {
     display: flex;
     align-items: center;
     margin-left: 30px;
+    gap: 15px;
 }
 
 .nav-simple a {
     display: flex;
     align-items: center;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--accent);
     font-size: 1.2rem;
     font-weight: 500;
     padding: 8px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-muted);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-bg);
     transition: all 0.3s ease;
 }
 
 .nav-simple a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--surface-muted);
+    color: var(--accent-hover);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] .nav-simple a {
+    background: var(--surface-muted);
+    border-color: var(--accent);
+}
+
+:root[data-theme="dark"] .nav-simple a:hover {
+    background: var(--accent);
+    color: var(--button-text);
 }
 
 /* About Page Styles */
@@ -34,11 +63,13 @@
     gap: 60px;
     align-items: center;
     padding: 80px 40px;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(35, 93, 163, 0.8) 100%);
+    background: var(--surface-bg);
     margin: 40px 0;
     border-radius: 20px;
     position: relative;
     overflow: hidden;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .about-hero::before {
@@ -48,7 +79,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     opacity: 0.5;
 }
 
@@ -60,18 +91,14 @@
 .hero-title {
     font-size: 4rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--accent);
     margin-bottom: 20px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
     line-height: 1.1;
 }
 
 .hero-subtitle {
     font-size: 1.8rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-secondary);
     margin-bottom: 30px;
     font-weight: 500;
 }
@@ -79,7 +106,7 @@
 .hero-description p {
     font-size: 1.2rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     max-width: 500px;
 }
 
@@ -92,9 +119,8 @@
 }
 
 .floating-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--surface-muted);
+    border: 1px solid var(--border-muted);
     border-radius: 15px;
     padding: 30px 20px;
     text-align: center;
@@ -116,8 +142,9 @@
 
 .floating-card:hover {
     transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: var(--surface-bg);
+    border-color: var(--accent);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .card-icon {
@@ -131,20 +158,27 @@
 .card-icon img {
     width: 40px;
     height: 40px;
-    filter: invert(1);
+    filter: none;
+}
+
+:root[data-theme="dark"] .card-icon img {
+    filter: brightness(0) invert(1);
 }
 
 .floating-card h3 {
-    color: #fff;
+    color: var(--text-primary);
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0;
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-20px);
     }
@@ -161,9 +195,8 @@
     text-align: center;
     font-size: 3rem;
     font-weight: 700;
-    color: #fff;
     margin-bottom: 50px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    background: linear-gradient(45deg, var(--accent), var(--accent-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -177,19 +210,18 @@
 }
 
 .mission-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-muted);
+    border: 1px solid var(--border-soft);
     border-radius: 15px;
     padding: 40px 30px;
     text-align: center;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .mission-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--surface-bg);
+    border-color: var(--accent);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
@@ -200,33 +232,33 @@
     width: 80px;
     height: 80px;
     margin: 0 auto 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-bg);
     border-radius: 50%;
     transition: all 0.3s ease;
 }
 
 .mission-card:hover .mission-icon {
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--surface-muted);
 }
 
 .mission-card h3 {
-    color: #fff;
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 15px;
+    color: var(--text-primary);
 }
 
 .mission-card p {
-    color: rgba(255, 255, 255, 0.8);
     font-size: 1.1rem;
     line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 /* Stats Section */
 .stats-section {
     padding: 60px 40px;
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface-muted));
     margin: 40px 0;
 }
 
@@ -239,42 +271,41 @@
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft);
     border-radius: 15px;
     padding: 40px 30px;
     text-align: center;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .stat-card:hover {
     transform: translateY(-5px) scale(1.05);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--surface-muted);
+    border-color: var(--accent);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 .stat-number {
     font-size: 3rem;
     font-weight: 700;
-    color: #fff;
     margin-bottom: 10px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    background: linear-gradient(45deg, var(--accent), var(--accent-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .stat-label {
-    color: rgba(255, 255, 255, 0.9);
     font-size: 1.2rem;
     font-weight: 500;
+    color: var(--text-secondary);
 }
 
 /* Values Section */
 .values-section {
     padding: 60px 40px;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(78, 205, 196, 0.05) 100%);
+    background: color-mix(in srgb, var(--accent-hover) 8%, var(--surface-muted));
     margin: 40px 0;
 }
 
@@ -287,41 +318,41 @@
 }
 
 .value-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft);
     border-radius: 15px;
     padding: 40px 30px;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .value-item:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--surface-muted);
+    border-color: var(--accent);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 .value-item h3 {
-    color: #fff;
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+    color: var(--text-primary);
 }
 
 .value-item h3 span {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    background: linear-gradient(45deg, var(--accent), var(--accent-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .value-item p {
-    color: rgba(255, 255, 255, 0.8);
     font-size: 1.1rem;
     line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 /* Responsive About Page */
@@ -331,26 +362,26 @@
         gap: 40px;
         padding: 60px 30px;
     }
-    
+
     .hero-title {
         font-size: 3rem;
     }
-    
+
     .hero-visual {
         grid-template-columns: 1fr;
         max-width: 400px;
         margin: 0 auto;
     }
-    
+
     .mission-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 30px;
     }
-    
+
     .stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
-    
+
     .values-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
@@ -360,45 +391,45 @@
     .about-hero {
         padding: 40px 20px;
     }
-    
+
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     .hero-subtitle {
         font-size: 1.5rem;
     }
-    
+
     .section-title {
         font-size: 2.5rem;
     }
-    
+
     .mission-section,
     .values-section {
         padding: 40px 20px;
     }
-    
+
     .stats-section {
         padding: 40px 20px;
     }
-    
+
     .mission-card,
     .value-item {
         padding: 30px 20px;
     }
-    
+
     .stat-card {
         padding: 30px 20px;
     }
-    
+
     .floating-card {
         padding: 20px 15px;
     }
-    
+
     .nav-simple {
         margin-left: 15px;
     }
-    
+
     .nav-simple a {
         font-size: 1rem;
         padding: 6px 12px;

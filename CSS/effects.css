@@ -9,12 +9,12 @@
 
 
 .sg-btn:hover {
-    background-color: #fd496d;
+    background-color: #0052a3;
 }
 
 
 .select-state:hover {
-    color: #ffffff48;
+    color: #0066cc;
 }
 
 .select-state:focus {
@@ -32,15 +32,15 @@
 }
 
 .book-btn:hover {
-    background: #fd323d;
+    background: #0052a3;
 }
 
 .white-home-line:hover {
-    background-color: rgba(204, 203, 255, 0.16);
+    background-color: rgba(0, 102, 204, 0.08);
 }
 
 .left-line ul li:hover {
-    color: rgb(255, 255, 255);
+    color: #0066cc;
 }
 
 .movie {
@@ -56,49 +56,26 @@
 }
 
 .footer-section ul li a:hover {
-    color: #4ecdc4;
+    color: #0066cc;
     transform: translateX(5px);
 }
 
 .app-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 102, 204, 0.1);
     transform: translateY(-2px);
 }
 
 .subscribe-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
 }
 
 
 .social-icon:hover {
-    color: #fff;
+    color: #0066cc;
     transform: translateY(-3px);
-}
-
-.social-icon.facebook:hover {
-    background: #1877f2;
-    border-color: #1877f2;
-}
-
-.social-icon.twitter:hover {
-    background: #000000;
-    border-color: #000000;
-}
-
-.social-icon.instagram:hover {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    border-color: #e6683c;
-}
-
-.social-icon.youtube:hover {
-    background: #ff0000;
-    border-color: #ff0000;
-}
-
-.social-icon.linkedin:hover {
-    background: #0077b5;
     border-color: #0077b5;
+    background: rgba(255, 255, 255, 0.949);
 }
 
 /* 

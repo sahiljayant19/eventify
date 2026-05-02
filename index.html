@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="CSS/utility.css">
     <link rel="stylesheet" href="CSS/responsive.css">
     <link rel="stylesheet" href="CSS/mobile-performance.css">
+    <link rel="stylesheet" href="CSS/popup.css">
     <link rel="shortcut icon" href="Resource/img/favicon.ico" type="image/x-icon">
 </head>
 
@@ -22,7 +23,7 @@
                         id="menuImg"></button>
             </div>
             <div class="navLeft toggle-nav" id="tgl">
-                <div class="logo"><img src="Resource/img/logo.png" alt="logo" width="257px"></div>
+                <div class="logo"><img src="Resource/img/logo.png" alt="logo" width="200px"></div>
                 <div class="search-area">
                     <input type="search" name="search" id="search" placeholder="Search for Events, Sports, Activities">
                     <button type="button" class="search-btn">
@@ -39,14 +40,35 @@
 
 
                 <div class="login">
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode"
+                        title="Switch theme">
+                        <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2"></path>
+                            <path d="M12 20v2"></path>
+                            <path d="m4.93 4.93 1.41 1.41"></path>
+                            <path d="m17.66 17.66 1.41 1.41"></path>
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                            <path d="m6.34 17.66-1.41 1.41"></path>
+                            <path d="m19.07 4.93-1.41 1.41"></path>
+                        </svg>
+                        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18"
+                            height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                        </svg>
+                    </button>
                     <button type="button" class="sg-btn" id="signInBtn">Sign in</button>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="user-icon"
-                        id="userIcon" style="display: none;">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
                     <div class="user-info" id="userInfo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="user-icon" id="userIcon" style="display: none;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                         <span id="userDisplayName" class="sg-user-name" style="display: none;"></span>
                         <button type="button" class="sg-btn sg-out-btn" id="signOutBtn" style="display: none;">Sign
                             out</button>
@@ -79,7 +101,6 @@
 
                     <div class="input-group">
                         <div class="email-icon-label">
-                            <img src="https://www.svgrepo.com/show/502648/email.svg" alt="Email" width="20px" alt="E">
                             <label for="registerEmail">Email Address</label>
                         </div>
                         <input type="email" placeholder="name@example.com" class="auth-input" id="registerEmail">
@@ -107,7 +128,6 @@
 
                     <div class="input-group">
                         <div class="email-icon-label">
-                            <img src="https://www.svgrepo.com/show/502648/email.svg" alt="Email" width="20px" alt="E">
                             <label for="loginEmail">Email Address</label>
                         </div>
                         <input type="email" placeholder="name@example.com" class="auth-input" id="loginEmail">
@@ -170,12 +190,13 @@
     <div class="navLine">
         <div class="left-line">
             <ul>
-                <li>All Events</li>
-                <li>WorkShops</li>
-                <li>Music</li>
-                <li>Sports</li>
-                <li>Kids</li>
-                <li>Comedy</li>
+                <li class="genre-filter active" data-genre="all">All Events</li>
+                <li class="genre-filter" data-genre="Music">Music</li>
+                <li class="genre-filter" data-genre="Comedy">Comedy</li>
+                <li class="genre-filter" data-genre="Sports">Sports</li>
+                <li class="genre-filter" data-genre="Kids">Kids</li>
+                <li class="genre-filter" data-genre="Tech">Tech</li>
+                <li class="genre-filter" data-genre="Business">Business</li>
                 <li id="myBookingLink" class="mob-nav-links"><a href="bookings.html"
                         style="color: inherit; text-decoration: none;">My Bookings</a></li>
             </ul>
@@ -392,8 +413,8 @@
                 <svg width="60" height="60" viewBox="0 0 100 100">
                     <defs>
                         <linearGradient id="playGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#7C3AED" />
-                            <stop offset="100%" stop-color="#06B6D4" />
+                            <stop offset="0%" stop-color="#0066cc" />
+                            <stop offset="100%" stop-color="#38bdf8" />
                         </linearGradient>
                     </defs>
                     <circle cx="50" cy="50" r="50" fill="url(#playGrad)" />
@@ -417,29 +438,29 @@
                 <div class="movies-images premiere-images">
                     <div class="movie movie1">
                         <img src="Resource/img/movie1.jpg" alt="img">
-                        <h2 class="title title1 cl-white fade-opacity">The Worst Person in the World</h2>
-                        <span class="type cl-white fade-opacity">Action/Thriller</span>
+                        <h2 class="title title1 cl-white fade-opacity text-black">The Worst Person in the World</h2>
+                        <span class="type cl-white fade-opacity text-black">Action/Thriller</span>
                     </div>
                     <div class="movie movie2">
                         <img src="Resource/img/movie2.jpg" alt="img">
-                        <h2 class="title title2 cl-white fade-opacity">Football Matches</h2>
-                        <span class="type cl-white fade-opacity">English</span>
+                        <h2 class="title title2 cl-white fade-opacity text-black">Football Matches</h2>
+                        <span class="type cl-white fade-opacity text-black">English</span>
                     </div>
                     <div class="movie movie3">
                         <img src="Resource/img/movie3.jpg" alt="img">
-                        <h2 class="title title3 cl-white fade-opacity">Wings of Hope Dinner</h2>
-                        <span class="type cl-white fade-opacity">English</span>
+                        <h2 class="title title3 cl-white fade-opacity text-black">Wings of Hope Dinner</h2>
+                        <span class="type cl-white fade-opacity text-black">English</span>
                     </div>
                     <div class="movie movie4">
                         <img src="Resource/img/movie4.jpg" alt="img">
-                        <h2 class="title title1 cl-white fade-opacity">A Honeymoon to Remember</h2>
-                        <span class="type cl-white fade-opacity">Hindi</span>
+                        <h2 class="title title1 cl-white fade-opacity text-black">A Honeymoon to Remember</h2>
+                        <span class="type cl-white fade-opacity text-black">Hindi</span>
                     </div>
 
                     <div class="movie movie5">
                         <img src="Resource/img/movie5.jpg" alt="img">
-                        <h2 class="title title2 cl-white fade-opacity">Vogue Vibes</h2>
-                        <span class="type cl-white fade-opacity">English</span>
+                        <h2 class="title title2 cl-white fade-opacity text-black">Vogue Vibes</h2>
+                        <span class="type cl-white fade-opacity text-black">English</span>
                     </div>
                 </div>
             </div>

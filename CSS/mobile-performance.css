@@ -4,42 +4,42 @@
     /* Reduce complex gradients for mobile performance */
     body {
         /* Replace complex gradients with solid colors on mobile */
-        background: #19194f !important;
+        background: var(--page-bg) !important;
     }
 
     /* Fix navbar colors to match theme */
     .navbar {
-        background: #1f2533 !important;
-        border-bottom: 1px solid #333 !important;
+        background: var(--surface-bg) !important;
+        border-bottom: 1px solid var(--border-soft) !important;
     }
 
     .navLeft {
-        background: #1f2533 !important;
+        background: var(--surface-bg) !important;
     }
 
     /* Optimize animated elements */
     .themed-divider .divider-glow {
-        background: #4ecdc4 !important;
+        background: var(--border-muted) !important;
         box-shadow: none !important;
     }
 
     .premiere-wrapper {
-        background: rgba(0, 0, 0, 0.9) !important;
-        background-color: #1a1a2e !important;
+        background: var(--surface-muted) !important;
+        background-color: var(--surface-muted) !important;
     }
 
     /* Simplify button gradients */
     .book-btn,
     .primary-btn,
     .sg-btn {
-        background: #ff6b6b !important;
+        background: var(--accent) !important;
         background-image: none !important;
         transition: background-color 0.3s ease !important;
     }
 
     /* Optimize footer */
     footer {
-        background: #1a1a2e !important;
+        background: var(--page-bg) !important;
     }
 
     /* Disable heavy animations on mobile */
@@ -58,6 +58,24 @@
     img {
         transform: translateZ(0) !important;
         backface-visibility: hidden !important;
+    }
+
+    /* Remove filter for dark theme */
+    :root[data-theme="dark"] .hidden-logo {
+        filter: invert(1);
+    }
+
+    :root[data-theme="dark"] .mobile-nav-links a::after {
+        background-color: rgba(255, 255, 255, 0.609);
+    }
+
+    /* Navbar logo filter for light theme (support, bookings, payment pages) */
+    .navbar a>img {
+        filter: none;
+    }
+
+    :root[data-theme="dark"] .navbar a>img {
+        filter: none;
     }
 
     /* Improve scrolling performance */

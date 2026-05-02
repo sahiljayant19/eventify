@@ -1,51 +1,32 @@
-# Compiled class file
-*.class
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Log file
-*.log
+# Node.js & npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
-
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
-
-# IDE
-.idea/
-*.iml
-*.ipr
-*.iws
+# IDE & Editor Settings
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
 *~
+*.iml
+*.ipr
+*.iws
 
-# OS
+# OS Files
 .DS_Store
 .DS_Store?
 ._*
@@ -54,25 +35,31 @@ buildNumber.properties
 ehthumbs.db
 Thumbs.db
 
-# Node.js (if using for development)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Build & Distribution
+dist/
+build/
+.cache/
+.parcel-cache/
+out/
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
 
-# Database
+# Database Files
 *.db
 *.sqlite
 *.sqlite3
 
-# Temporary files
+# Testing & Coverage
+coverage/
+.nyc_output/
+jest-coverage/
+*.lcov
+
+# Temporary Files
+tmp/
+temp/
 *.tmp
 *.temp
 
@@ -80,23 +67,38 @@ yarn-error.log*
 logs/
 *.log
 
-# Runtime data
+# Runtime Data
 pids/
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
+# npm Cache
 .npm
+.eslintcache
 
-# Optional REPL history
+# Dependency Directories
+jspm_packages/
+node_modules/
+
+# Optional REPL History
 .node_repl_history
+
+# Secrets & Credentials
+.ssh/
+*.pem
+*.key
+*.crt
+
+# Backup Files
+*.bak
+*.backup
+*.swp
+
+# System Files
+.AppleDouble
+.LSOverride
+
 
 # Output of 'npm pack'
 *.tgz
