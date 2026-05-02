@@ -10,7 +10,7 @@ Built using Node.js, Express, MySQL, and modern frontend technologies, Eventify 
 
 ## 🚀 Live Demo
 
-👉 https://your-project.vercel.app
+👉 https://eventify-booking-app.vercel.app/
 *(Frontend demo showcasing UI and user flow)*
 
 ---
