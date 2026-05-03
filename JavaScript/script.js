@@ -13,7 +13,8 @@ function getPreferredTheme() {
         return savedTheme;
     }
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Default to light theme for new users
+    return 'light';
 }
 
 function applyTheme(theme) {
