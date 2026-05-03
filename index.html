@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventify – Event & Concert Booking Platform</title>
+    <script>
+        // Set theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('eventifyTheme');
+            const theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'light';
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/effects.css">
     <link rel="stylesheet" href="CSS/utility.css">
