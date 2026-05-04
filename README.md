@@ -91,7 +91,7 @@ JWT_EXPIRES_IN="7d"
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/sahiljayant19/Eventify-Platform.git
+git clone https://github.com/sahiljayant19/eventify
 cd eventify
 ```
 
