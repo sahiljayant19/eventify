@@ -1,4 +1,4 @@
-🎫 Eventify Platform - Event & Concert Booking System
+# 🎫 Eventify Platform - Event & Concert Booking System
 
 Eventify is a full-stack web application designed to simulate a real-world event and concert booking experience. It allows users to discover events, book tickets, manage their bookings, and interact with a modern, responsive interface.
 
@@ -6,18 +6,16 @@ The platform focuses on replicating production-level features such as authentica
 
 Built using Node.js, Express, MySQL, and modern frontend technologies, Eventify showcases how a complete booking system can be structured from UI to backend logic.
 
-
 ---
 
-🚀 Live Demo
+## 🚀 Live Demo
 
 👉 https://eventify-booking-app.vercel.app/
-(Frontend demo showcasing UI and user flow)
-
+*(Frontend demo showcasing UI and user flow)*
 
 ---
 
-📌 Project Status
+## 📌 Project Status
 
 This project includes a complete backend (Node.js + Express) and database (MySQL) implementation with authentication, booking system, and API architecture.
 
@@ -25,267 +23,220 @@ The live demo currently showcases the frontend experience. Backend APIs and data
 
 To experience full functionality:
 
-Clone the repository
-
-Configure the .env file
-
-Set up MySQL locally
-
-Run backend and frontend
-
-
+* Clone the repository
+* Configure the `.env` file
+* Set up MySQL locally
+* Run backend and frontend
 
 ---
 
-✨ Key Features
+## ✨ Key Features
 
-🔐 User Authentication (JWT-based login & registration)
-
-🎫 Event Discovery with pricing and availability
-
-📦 Smart Booking System with ticket management
-
-📊 My Bookings Dashboard
-
-🎟 QR Code Ticket Generation
-
-💳 Payment Flow UI (UPI / Card simulation)
-
-📱 Fully Responsive Design
-
-
+* 🔐 User Authentication (JWT-based login & registration)
+* 🎫 Event Discovery with pricing and availability
+* 📦 Smart Booking System with ticket management
+* 📊 My Bookings Dashboard
+* 🎟 QR Code Ticket Generation
+* 💳 Payment Flow UI (UPI / Card simulation)
+* 📱 Fully Responsive Design
 
 ---
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 
-Frontend
+### Frontend
 
-HTML5
+* HTML5
+* CSS3 (animations, responsive design)
+* JavaScript (ES6+)
 
-CSS3 (animations, responsive design)
+### Backend
 
-JavaScript (ES6+)
+* Node.js
+* Express.js
+* Prisma ORM
+* MySQL
+* JWT Authentication
+* bcryptjs
 
+### Tools
 
-Backend
-
-Node.js
-
-Express.js
-
-Prisma ORM
-
-MySQL
-
-JWT Authentication
-
-bcryptjs
-
-
-Tools
-
-Nodemon
-
-dotenv
-
-npm
-
-
+* Nodemon
+* dotenv
+* npm
 
 ---
 
-⚙️ Environment Setup
+## ⚙️ Environment Setup
 
-Backend .env.example
+### Backend `.env.example`
 
-PORT=8080  
-  
-BASE_URL="http://localhost:8080"  
-CLIENT_URL="http://localhost:3000"  
-  
-DATABASE_URL="mysql://USERNAME:PASSWORD@localhost:3306/eventify"  
-  
-(Optional)  
-JWT_SECRET="your_secret_here"  
+```env
+PORT=8080
+
+BASE_URL="http://localhost:8080"
+CLIENT_URL="http://localhost:3000"
+
+DATABASE_URL="mysql://USERNAME:PASSWORD@localhost:3306/eventify"
+
+(Optional)
+JWT_SECRET="your_secret_here"
 JWT_EXPIRES_IN="7d"
-
+```
 
 ---
 
-🚀 Getting Started
+## 🚀 Getting Started
 
-1. Clone the Repository
+### 1. Clone the Repository
 
-git clone https://github.com/sahiljayant19/eventify  
+```bash
+git clone https://github.com/sahiljayant19/Eventify-Platform.git
 cd eventify
-
+```
 
 ---
 
-2. Backend Setup
+### 2. Backend Setup
 
-cd backend  
+```bash
+cd backend
 npm install
+```
 
-Create .env file and configure database.
+Create `.env` file and configure database.
 
 Run:
 
+```bash
 npm run dev
-
+```
 
 ---
 
-3. Database Setup
+### 3. Database Setup
 
+```sql
 CREATE DATABASE eventify;
+```
 
 Then:
 
-npm run db:push  
+```bash
+npm run db:push
 npm run db:generate
-
+```
 
 ---
 
-4. Frontend Setup
+### 4. Frontend Setup
 
+```bash
 npx serve .
+```
 
 or
 
+```bash
 python -m http.server 8000
-
+```
 
 ---
 
-🔗 API Endpoints
+## 🔗 API Endpoints
 
-Base URL
+### Base URL
 
+```
 http://localhost:8080/api
+```
 
-Auth
+### Auth
 
-POST /auth/register
+* POST `/auth/register`
+* POST `/auth/login`
 
-POST /auth/login
+### Bookings
 
+* GET `/bookings`
+* POST `/bookings`
+* GET `/bookings/:id`
+* DELETE `/bookings/:id`
 
-Bookings
+### Health
 
-GET /bookings
-
-POST /bookings
-
-GET /bookings/:id
-
-DELETE /bookings/:id
-
-
-Health
-
-GET /health
-
-
+* GET `/health`
 
 ---
 
-📁 Project Structure
+## 📁 Project Structure
 
-eventify-platform/  
-├── frontend/  
-├── backend/  
-│   ├── routes/  
-│   ├── controllers/  
-│   ├── middleware/  
-│   └── prisma/  
-├── assets/  
+```
+eventify-platform/
+├── frontend/
+├── backend/
+│   ├── routes/
+│   ├── controllers/
+│   ├── middleware/
+│   └── prisma/
+├── assets/
 └── README.md
-
-
----
-
-🔐 Security
-
-JWT Authentication
-
-Password hashing (bcrypt)
-
-CORS protection
-
-Environment variable management
-
-
+```
 
 ---
 
-🎯 Highlights
+## 🔐 Security
 
-Full-stack architecture
-
-Clean REST API design
-
-Responsive UI/UX
-
-Modular backend structure
-
-Real-world booking workflow
-
-
+* JWT Authentication
+* Password hashing (bcrypt)
+* CORS protection
+* Environment variable management
 
 ---
 
-📦 Deployment
+## 🎯 Highlights
 
-Frontend
-
-Vercel / GitHub Pages
-
-
-Backend (optional)
-
-Render / Railway
-
-
-Database
-
-MySQL (local or cloud)
-
-
+* Full-stack architecture
+* Clean REST API design
+* Responsive UI/UX
+* Modular backend structure
+* Real-world booking workflow
 
 ---
 
-👤 Author
+## 📦 Deployment
 
-Sahil Jayant
-📧 sahiljayantwork@gmail.com
+### Frontend
+
+* Vercel / GitHub Pages
+
+### Backend (optional)
+
+* Render / Railway
+
+### Database
+
+* MySQL (local or cloud)
+
+---
+
+## 👤 Author
+
+**Sahil Jayant**
+📧 [sahiljayantwork@gmail.com](mailto:sahiljayantwork@gmail.com)
 🔗 https://github.com/sahiljayant19
 
-
 ---
 
-⭐ Project Goal
+## ⭐ Project Goal
 
 This project demonstrates:
 
-Full-stack development skills
-
-API design & backend logic
-
-Database integration
-
-Real-world application flow
-
-
----
-
-📜 License
-© 2026 Sahil Jayant. All rights reserved.
-Unauthorized copying, distribution, or use of this project, via any medium, is strictly prohibited without prior permission from the author.
+* Full-stack development skills
+* API design & backend logic
+* Database integration
+* Real-world application flow
 
 ---
 
 > ⭐ Star this repo if you found it useful!
-At the end add all right reserved
