@@ -224,6 +224,7 @@ eventify-platform/
 
 **Sahil Jayant**
 📧 [sahiljayantwork@gmail.com](mailto:sahiljayantwork@gmail.com)
+
 🔗 https://github.com/sahiljayant19
 
 ---
