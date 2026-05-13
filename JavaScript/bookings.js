@@ -137,7 +137,7 @@ async function viewTicket(bookingId) {
         // Show the modal
         showTicketModal();
         
-        // Generate QR code for the ticket (after showing to ensure container is ready)
+        // Generate QR code for the ticket after the modal is visible.
         generateTicketQRCode(booking);
         
     } catch (error) {
@@ -190,9 +190,9 @@ async function viewTicket(bookingId) {
                     
                     console.log('Using fallback booking data:', fallbackBooking);
                     currentBookingData = fallbackBooking;
+                    showTicketModal();
                     populateTicketModal(fallbackBooking);
                     generateTicketQRCode(fallbackBooking);
-                    showTicketModal();
                     return;
                 }
             }
@@ -303,17 +303,24 @@ function generateTicketQRCode(booking) {
                 height: 180,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: 1 // Using numeric value for CorrectLevel.H (H=2, Q=3, M=0, L=1 - wait, L=1, M=0, Q=3, H=2 is common but let's be safe)
+                correctLevel: QRCode.CorrectLevel ? QRCode.CorrectLevel.H : 2
             });
-            // Note: If QRCode.CorrectLevel is undefined, we use a number or the fallback
         } else {
             console.warn('QRCode library not found, using fallback');
-            // Fallback to Google Charts API
             const img = document.createElement('img');
-            img.src = `https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=${encodeURIComponent(qrText)}&choe=UTF-8`;
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrText)}`;
             img.alt = 'Ticket QR Code';
             img.style.border = '1px solid #ddd';
             img.style.borderRadius = '8px';
+            img.width = 180;
+            img.height = 180;
+            img.onerror = () => {
+                qrContainer.innerHTML = `<div class="qr-fallback">
+                    <strong>Entry Code</strong>
+                    <span>${ticketData.bookingId}</span>
+                    <small>QR image could not load. Show this booking ID at entry.</small>
+                </div>`;
+            };
             qrContainer.appendChild(img);
         }
     } catch (error) {

@@ -159,6 +159,34 @@
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border: 2px solid var(--border-soft);
+    min-height: 222px;
+    min-width: 222px;
+    display: grid;
+    place-items: center;
+}
+
+.ticket-qr-code canvas,
+.ticket-qr-code img {
+    display: block;
+}
+
+.qr-fallback {
+    display: grid;
+    gap: 8px;
+    max-width: 180px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.qr-fallback span {
+    font-family: monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.qr-fallback small {
+    color: var(--text-secondary);
+    line-height: 1.4;
 }
 
 .qr-instruction {

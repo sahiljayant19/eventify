@@ -2,6 +2,7 @@ const express = require('express');
 const {
   createBooking,
   getBookings,
+  getBookingById,
   deleteBooking
 } = require('../controllers/bookingController');
 
@@ -12,6 +13,9 @@ router.post('/', createBooking);
 
 // GET /api/bookings
 router.get('/', getBookings);
+
+// GET /api/bookings/:id
+router.get('/:id', getBookingById);
 
 // DELETE /api/bookings/:id
 router.delete('/:id', deleteBooking);

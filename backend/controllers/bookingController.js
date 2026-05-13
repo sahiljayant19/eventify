@@ -81,6 +81,30 @@ const getBookings = async (req, res) => {
   }
 };
 
+const getBookingById = async (req, res) => {
+  try {
+    const bookingId = parseInt(req.params.id);
+
+    if (!bookingId) {
+      return res.status(400).json({ error: 'Valid booking ID is required' });
+    }
+
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { user: true }
+    });
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    res.json(booking);
+  } catch (error) {
+    console.error('Get booking by ID error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 const deleteBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -116,5 +140,6 @@ const deleteBooking = async (req, res) => {
 module.exports = {
   createBooking,
   getBookings,
+  getBookingById,
   deleteBooking
 };
