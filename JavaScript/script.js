@@ -239,7 +239,7 @@ registerBtn.addEventListener('click', () => {
         password: passwords[0]
     };
 
-    fetch('http://localhost:8080/api/auth/register', {
+    fetch(`${window.EVENTIFY_API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -282,7 +282,7 @@ loginBtn.addEventListener('click', () => {
 
     const payload = { email, password };
 
-    fetch('http://localhost:8080/api/auth/login', {
+    fetch(`${window.EVENTIFY_API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -245,9 +245,9 @@ async function saveBookingToBackend(bookingData, bookingId) {
         };
         
         console.log('Saving booking to backend:', payload);
-        console.log('Backend URL: http://localhost:8080/api/bookings');
+        console.log(`Backend URL: ${window.EVENTIFY_API_BASE_URL}/bookings`);
         
-        const response = await fetch('http://localhost:8080/api/bookings', {
+        const response = await fetch(`${window.EVENTIFY_API_BASE_URL}/bookings`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -278,7 +278,7 @@ async function saveBookingToBackend(bookingData, bookingId) {
         
     } catch (error) {
         console.error('Network error saving booking:', error);
-        showPopupMessage('Network Error', 'Booking confirmed but failed to save to server. Please check your internet connection and ensure the backend is running on localhost:8080.', 'error');
+        showPopupMessage('Network Error', 'Booking confirmed but failed to save to server. Please check your internet connection and ensure the backend is running.', 'error');
     }
 }
 

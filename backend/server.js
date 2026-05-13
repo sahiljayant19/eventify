@@ -22,9 +22,10 @@ app.use(cors({
       return callback(null, true);
     }
 
-    return callback(new Error('Not allowed by CORS', process.env.CLIENT_URL));
+    return callback(new Error('Not allowed by CORS'));
   }
 }));
+
 app.use(express.json());
 
 // Routes
@@ -43,8 +44,17 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Stop the existing server or set a different PORT in .env.`);
+    process.exit(1);
+  }
+
+  throw error;
 });
 
 // Graceful shutdown
