@@ -1,140 +1,223 @@
-const { PrismaClient } = require('@prisma/client');
-const { authenticateToken } = require('../middleware/auth');
+const db = require('../db');
 
-const prisma = new PrismaClient();
+const createBooking = (req, res) => {
 
-const createBooking = async (req, res) => {
   try {
-    const { eventName, eventMeta, tickets, pricePerTicket, totalAmount, userId } = req.body;
+
+    const {
+      eventName,
+      eventMeta,
+      tickets,
+      pricePerTicket,
+      totalAmount,
+      userId
+    } = req.body;
 
     if (!userId) {
       return res.status(400).json({
-        message: 'User ID is required. Please log in.',
+        message: 'User ID is required',
         bookingId: null
       });
     }
 
-    // Verify user exists
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(userId) }
-    });
+    // Check user exists
+    db.query(
+      'SELECT * FROM users WHERE id = ?',
+      [userId],
+      (err, userResults) => {
 
-    if (!user) {
-      return res.status(400).json({
-        message: 'User not found',
-        bookingId: null
-      });
-    }
+        if (err) {
+          console.error(err);
 
-    // Create booking
-    const booking = await prisma.booking.create({
-      data: {
-        eventName,
-        eventMeta,
-        tickets: parseInt(tickets),
-        pricePerTicket: parseFloat(pricePerTicket),
-        totalAmount: parseFloat(totalAmount),
-        userId: parseInt(userId)
+          return res.status(500).json({
+            message: 'Database error',
+            bookingId: null
+          });
+        }
+
+        if (userResults.length === 0) {
+          return res.status(404).json({
+            message: 'User not found',
+            bookingId: null
+          });
+        }
+
+        // Create booking
+        db.query(
+          `INSERT INTO bookings
+          (eventName, eventMeta, tickets, pricePerTicket, totalAmount, userId)
+          VALUES (?, ?, ?, ?, ?, ?)`,
+          [
+            eventName,
+            eventMeta,
+            tickets,
+            pricePerTicket,
+            totalAmount,
+            userId
+          ],
+          (err, result) => {
+
+            if (err) {
+              console.error(err);
+
+              return res.status(500).json({
+                message: 'Database error',
+                bookingId: null
+              });
+            }
+
+            res.status(201).json({
+              message: 'Booking created successfully',
+              bookingId: result.insertId.toString()
+            });
+
+          }
+        );
+
       }
-    });
-
-    const message = `Booking created for ${booking.eventName} (${booking.tickets} tickets, total $${booking.totalAmount})`;
-
-    res.status(201).json({
-      message,
-      bookingId: booking.id.toString()
-    });
+    );
 
   } catch (error) {
-    console.error('Create booking error:', error);
+
+    console.error(error);
+
     res.status(500).json({
       message: 'Internal server error',
       bookingId: null
     });
+
   }
+
 };
 
-const getBookings = async (req, res) => {
+const getBookings = (req, res) => {
+
   try {
+
     const { userId } = req.query;
 
-    let bookings;
+    let query = `
+      SELECT bookings.*, users.username, users.email
+      FROM bookings
+      JOIN users ON bookings.userId = users.id
+    `;
+
+    const values = [];
 
     if (userId) {
-      // Get bookings for specific user
-      bookings = await prisma.booking.findMany({
-        where: { userId: parseInt(userId) },
-        include: { user: true }
-      });
-    } else {
-      // Get all bookings (fallback)
-      bookings = await prisma.booking.findMany({
-        include: { user: true }
-      });
+      query += ' WHERE bookings.userId = ?';
+      values.push(userId);
     }
 
-    res.json(bookings);
+    db.query(query, values, (err, results) => {
+
+      if (err) {
+        console.error(err);
+
+        return res.status(500).json({
+          error: 'Database error'
+        });
+      }
+
+      res.json(results);
+
+    });
 
   } catch (error) {
-    console.error('Get bookings error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    console.error(error);
+
+    res.status(500).json({
+      error: 'Internal server error'
+    });
+
   }
+
 };
 
-const getBookingById = async (req, res) => {
+const getBookingById = (req, res) => {
+
   try {
-    const bookingId = parseInt(req.params.id);
 
-    if (!bookingId) {
-      return res.status(400).json({ error: 'Valid booking ID is required' });
-    }
+    const bookingId = req.params.id;
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: { user: true }
+    db.query(
+      `SELECT bookings.*, users.username, users.email
+       FROM bookings
+       JOIN users ON bookings.userId = users.id
+       WHERE bookings.id = ?`,
+      [bookingId],
+      (err, results) => {
+
+        if (err) {
+          console.error(err);
+
+          return res.status(500).json({
+            error: 'Database error'
+          });
+        }
+
+        if (results.length === 0) {
+          return res.status(404).json({
+            error: 'Booking not found'
+          });
+        }
+
+        res.json(results[0]);
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: 'Internal server error'
     });
 
-    if (!booking) {
-      return res.status(404).json({ error: 'Booking not found' });
-    }
-
-    res.json(booking);
-  } catch (error) {
-    console.error('Get booking by ID error:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
+
 };
 
-const deleteBooking = async (req, res) => {
+const deleteBooking = (req, res) => {
+
   try {
-    const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).send();
-    }
+    const bookingId = req.params.id;
 
-    const bookingId = parseInt(id);
+    db.query(
+      'DELETE FROM bookings WHERE id = ?',
+      [bookingId],
+      (err, result) => {
 
-    // Check if booking exists
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
-    });
+        if (err) {
+          console.error(err);
 
-    if (!booking) {
-      return res.status(404).send();
-    }
+          return res.status(500).json({
+            error: 'Database error'
+          });
+        }
 
-    // Delete booking
-    await prisma.booking.delete({
-      where: { id: bookingId }
-    });
+        if (result.affectedRows === 0) {
+          return res.status(404).send();
+        }
 
-    res.status(204).send();
+        res.status(204).send();
+
+      }
+    );
 
   } catch (error) {
-    console.error('Delete booking error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    console.error(error);
+
+    res.status(500).json({
+      error: 'Internal server error'
+    });
+
   }
+
 };
 
 module.exports = {
