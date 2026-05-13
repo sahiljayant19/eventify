@@ -1,244 +1,344 @@
-# 🎫 Eventify Platform - Event & Concert Booking System
+# Eventify - Event Booking Platform
 
-Eventify is a full-stack web application designed to simulate a real-world event and concert booking experience. It allows users to discover events, book tickets, manage their bookings, and interact with a modern, responsive interface.
+Eventify is a full-stack event booking web application where users can browse events, create an account, book tickets, view their bookings, and open generated ticket details. The project is built with a static HTML/CSS/JavaScript frontend, a Node.js + Express backend, and a MySQL database.
 
-The platform focuses on replicating production-level features such as authentication, booking workflows, API-driven architecture, and database integration — making it a strong demonstration of practical full-stack development skills.
+The live application is deployed with:
 
-Built using Node.js, Express, MySQL, and modern frontend technologies, Eventify showcases how a complete booking system can be structured from UI to backend logic.
+- Frontend: Vercel
+- Backend API: Render
+- Database: Aiven MySQL
 
----
+## Live Link
 
-## 🚀 Live Demo
+- Frontend: https://eventify-booking-app.vercel.app/
+- Backend health check: https://eventify-b3n8.onrender.com/api/health
 
-👉 https://eventify-booking-app.vercel.app/
-*(Frontend demo showcasing UI and user flow)*
+## Features
 
----
+- User registration and login
+- Password hashing with bcryptjs
+- JWT-based authentication response
+- Event discovery pages with responsive UI
+- Ticket booking flow
+- My Bookings dashboard
+- Ticket detail modal with QR-style ticket display
+- Booking cancellation
+- Light and dark theme support
+- Mobile responsive navigation and layouts
+- REST API connected to a cloud MySQL database
 
-## 📌 Project Status
-
-This project includes a complete backend (Node.js + Express) and database (MySQL) implementation with authentication, booking system, and API architecture.
-
-The live demo currently showcases the frontend experience. Backend APIs and database are not deployed in the live version due to hosting limitations.
-
-To experience full functionality:
-
-* Clone the repository
-* Configure the `.env` file
-* Set up MySQL locally
-* Run backend and frontend
-
----
-
-## ✨ Key Features
-
-* 🔐 User Authentication (JWT-based login & registration)
-* 🎫 Event Discovery with pricing and availability
-* 📦 Smart Booking System with ticket management
-* 📊 My Bookings Dashboard
-* 🎟 QR Code Ticket Generation
-* 💳 Payment Flow UI (UPI / Card simulation)
-* 📱 Fully Responsive Design
-
----
-
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 
-* HTML5
-* CSS3 (animations, responsive design)
-* JavaScript (ES6+)
+- HTML5
+- CSS3
+- JavaScript ES modules
+- Vercel deployment
 
 ### Backend
 
-* Node.js
-* Express.js
-* Prisma ORM
-* MySQL
-* JWT Authentication
-* bcryptjs
+- Node.js
+- Express.js
+- mysql2
+- bcryptjs
+- jsonwebtoken
+- dotenv
+- Render deployment
 
-### Tools
+### Database
 
-* Nodemon
-* dotenv
-* npm
+- MySQL
+- Aiven cloud database
 
----
+## Project Structure
 
-## ⚙️ Environment Setup
-
-### Backend `.env.example`
-
-```env
-PORT=8080
-
-BASE_URL="http://localhost:8080"
-CLIENT_URL="http://localhost:3000"
-
-DATABASE_URL="mysql://USERNAME:PASSWORD@localhost:3306/eventify"
-
-(Optional)
-JWT_SECRET="your_secret_here"
-JWT_EXPIRES_IN="7d"
+```text
+eventify/
+├── index.html
+├── about.html
+├── bookings.html
+├── payment.html
+├── support.html
+├── CSS/
+├── JavaScript/
+│   ├── api-config.js
+│   ├── bookings.js
+│   ├── payment.js
+│   └── script.js
+├── Resource/
+│   ├── img/
+│   └── svg/
+├── backend/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── db.js
+│   ├── server.js
+│   ├── package.json
+│   └── .env.example
+├── Eventify DB.session.sql
+└── README.md
 ```
 
----
+## API Configuration
 
-## 🚀 Getting Started
+The frontend API base URL is configured in [JavaScript/api-config.js](JavaScript/api-config.js).
+
+```js
+window.EVENTIFY_API_BASE_URL = isLocalhost
+  ? 'http://localhost:8080/api'
+  : 'https://eventify-b3n8.onrender.com/api';
+```
+
+When running locally, the frontend calls `http://localhost:8080/api`. When deployed, it calls the Render backend.
+
+## Getting Started Locally
+
+### Prerequisites
+
+- Node.js 16 or later
+- npm
+- MySQL database, local or hosted
+- A static file server for the frontend, such as VS Code Live Server or `npx serve`
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/sahiljayant19/Eventify-Platform.git
+git clone https://github.com/sahiljayant19/eventify.git
 cd eventify
 ```
 
----
+### 2. Set Up the Database
 
-### 2. Backend Setup
-
-```bash
-cd backend
-npm install
-```
-
-Create `.env` file and configure database.
-
-Run:
-
-```bash
-npm run dev
-```
-
----
-
-### 3. Database Setup
+Create a MySQL database named `eventify`, then run the SQL from [Eventify DB.session.sql](Eventify%20DB.session.sql).
 
 ```sql
 CREATE DATABASE eventify;
+USE eventify;
 ```
 
-Then:
+The schema creates:
+
+- `users`: stores account details and password hashes
+- `bookings`: stores booking records linked to users
+
+### 3. Configure Backend Environment Variables
+
+Create a `.env` file inside the `backend` folder:
 
 ```bash
-npm run db:push
-npm run db:generate
+cd backend
+cp .env.example .env
 ```
 
----
+Update the values:
 
-### 4. Frontend Setup
+```env
+PORT=8080
+NODE_ENV=development
+
+CLIENT_URL=http://127.0.0.1:5500
+
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=eventify
+DB_PORT=3306
+
+JWT_SECRET=replace_with_a_strong_secret
+```
+
+For Aiven MySQL, use the host, port, username, password, and database name from the Aiven service console. The backend enables MySQL SSL in [backend/db.js](backend/db.js).
+
+### 4. Install and Run the Backend
+
+```bash
+npm install
+npm run dev
+```
+
+The backend runs on:
+
+```text
+http://localhost:8080
+```
+
+Health check:
+
+```text
+http://localhost:8080/api/health
+```
+
+### 5. Run the Frontend
+
+From the project root, run a static server:
 
 ```bash
 npx serve .
 ```
 
-or
+You can also use VS Code Live Server. For local API calls, open the frontend on `localhost` or `127.0.0.1`.
 
-```bash
-python -m http.server 8000
-```
+## Environment Variables
 
----
+Backend variables used by the current code:
 
-## 🔗 API Endpoints
+| Variable | Required | Description |
+| --- | --- | --- |
+| `PORT` | No | Backend port. Defaults to `8080`. |
+| `NODE_ENV` | No | Runtime environment label. |
+| `CLIENT_URL` | No | Frontend URL reserved for CORS allowlist configuration. |
+| `DB_HOST` | Yes | MySQL host. |
+| `DB_USER` | Yes | MySQL username. |
+| `DB_PASSWORD` | Yes | MySQL password. |
+| `DB_NAME` | Yes | MySQL database name. |
+| `DB_PORT` | Yes | MySQL port. |
+| `JWT_SECRET` | Yes | Secret key used to sign JWTs. |
 
-### Base URL
+## API Endpoints
 
-```
-http://localhost:8080/api
+Base URL:
+
+```text
+/api
 ```
 
 ### Auth
 
-* POST `/auth/register`
-* POST `/auth/login`
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/auth/register` | Register a new user. |
+| `POST` | `/auth/login` | Log in and receive user data plus JWT token. |
 
 ### Bookings
 
-* GET `/bookings`
-* POST `/bookings`
-* GET `/bookings/:id`
-* DELETE `/bookings/:id`
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/bookings` | Create a booking. |
+| `GET` | `/bookings` | Get bookings. Supports `?userId=<id>`. |
+| `GET` | `/bookings/:id` | Get one booking by ID. |
+| `DELETE` | `/bookings/:id` | Cancel/delete a booking. |
 
 ### Health
 
-* GET `/health`
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/health` | Check whether the backend is running. |
 
----
+## Example API Payloads
 
-## 📁 Project Structure
+### Register
 
-```
-eventify-platform/
-├── frontend/
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── middleware/
-│   └── prisma/
-├── assets/
-└── README.md
+```json
+{
+  "username": "Sahil",
+  "email": "sahil@example.com",
+  "password": "password123"
+}
 ```
 
----
+### Login
 
-## 🔐 Security
+```json
+{
+  "email": "sahil@example.com",
+  "password": "password123"
+}
+```
 
-* JWT Authentication
-* Password hashing (bcrypt)
-* CORS protection
-* Environment variable management
+### Create Booking
 
----
+```json
+{
+  "eventName": "Arijit Singh Live",
+  "eventMeta": "Mumbai | 24 May 2026",
+  "tickets": 2,
+  "pricePerTicket": 1999,
+  "totalAmount": 3998,
+  "userId": 1
+}
+```
 
-## 🎯 Highlights
+## Deployment Notes
 
-* Full-stack architecture
-* Clean REST API design
-* Responsive UI/UX
-* Modular backend structure
-* Real-world booking workflow
+### Frontend on Vercel
 
----
+The frontend is a static site, so it can be deployed directly from the repository root. Vercel serves the HTML, CSS, JavaScript, and assets.
 
-## 📦 Deployment
+Important file:
 
-### Frontend
+- [JavaScript/api-config.js](JavaScript/api-config.js): controls whether the app uses local API or Render API.
 
-* Vercel / GitHub Pages
+### Backend on Render
 
-### Backend (optional)
+Render should run the backend from the `backend` directory.
 
-* Render / Railway
+Recommended settings:
 
-### Database
+```text
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+```
 
-* MySQL (local or cloud)
+Add the backend environment variables in Render:
 
----
+```env
+PORT=8080
+NODE_ENV=production
+CLIENT_URL=https://eventify-booking-app.vercel.app
+DB_HOST=your-aiven-host
+DB_USER=your-aiven-user
+DB_PASSWORD=your-aiven-password
+DB_NAME=your-aiven-database
+DB_PORT=your-aiven-port
+JWT_SECRET=your-production-jwt-secret
+```
 
-## 👤 Author
+### MySQL on Aiven
+
+Create a MySQL service in Aiven, create/import the `eventify` database schema, then copy the connection values into Render environment variables.
+
+The schema file is:
+
+```text
+Eventify DB.session.sql
+```
+
+## Security Notes
+
+- Keep `.env` files private.
+- Use a strong `JWT_SECRET` in production.
+- Do not commit database credentials.
+- The backend uses parameterized SQL queries through `mysql2`.
+- Passwords are stored as bcrypt hashes.
+
+## Useful Commands
+
+```bash
+# Start backend in development
+cd backend
+npm run dev
+
+# Start backend in production mode
+cd backend
+npm start
+
+# Serve frontend locally from project root
+npx serve .
+```
+
+## Author
 
 **Sahil Jayant**
 
-📧 [sahiljayantwork@gmail.com](mailto:sahiljayantwork@gmail.com)
+- Email: [sahiljayantwork@gmail.com](mailto:sahiljayantwork@gmail.com)
+- GitHub: https://github.com/sahiljayant19
 
-🔗 https://github.com/sahiljayant19
+## Project Goal
 
----
+Eventify demonstrates a practical full-stack workflow: a responsive frontend, REST API, authentication, booking persistence, and cloud deployment across Vercel, Render, and Aiven MySQL.
 
-## ⭐ Project Goal
-
-This project demonstrates:
-
-* Full-stack development skills
-* API design & backend logic
-* Database integration
-* Real-world application flow
-
----
-
-> ⭐ Star this repo if you found it useful!
+## Live Link
+https://eventify-booking-app.vercel.app/
