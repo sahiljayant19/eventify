@@ -1,24 +1,31 @@
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const { PrismaClient } = require('@prisma/client');
+
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 
 const app = express();
-const prisma = new PrismaClient();
+
 const PORT = process.env.PORT || 8080;
 
-const allowedOrigins = (process.env.CLIENT_URL || '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+// Allowed frontend URLs
+const allowedOrigins = [
+  'http://127.0.0.1:5500',
+  'http://localhost:5500',
+  process.env.CLIENT_URL
+].filter(Boolean);
 
 // Middleware
 app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+  origin: function (origin, callback) {
+
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
@@ -32,38 +39,28 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Eventify Backend is running' });
+  res.json({
+    status: 'OK',
+    message: 'Eventify Backend is running'
+  });
 });
 
-// Error handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+
+  console.error(err);
+
+  res.status(500).json({
+    error: err.message || 'Something went wrong'
+  });
+
 });
 
 // Start server
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => {
 
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Stop the existing server or set a different PORT in .env.`);
-    process.exit(1);
-  }
+  console.log(`Server running on port ${PORT}`);
 
-  throw error;
-});
-
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  await prisma.$disconnect();
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  await prisma.$disconnect();
-  process.exit(0);
 });
