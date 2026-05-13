@@ -4,4 +4,4 @@ const isLocalhost =
 
 window.EVENTIFY_API_BASE_URL = isLocalhost
   ? 'http://localhost:8080/api'
-  : 'https://eventify-backend.onrender.com/api';
+  : 'https://eventify-b3n8.onrender.com/api';
