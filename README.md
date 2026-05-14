@@ -1,5 +1,7 @@
 # Eventify - Event Booking Platform
 
+![Eventify Banner](Resource/img/readme-banner.png)
+
 Eventify is a full-stack event booking web application where users can browse events, create an account, book tickets, view their bookings, and open generated ticket details. The project is built with a static HTML/CSS/JavaScript frontend, a Node.js + Express backend, and a MySQL database.
 
 The live application is deployed with:
