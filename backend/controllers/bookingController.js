@@ -27,11 +27,11 @@ const createBooking = (req, res) => {
       (err, userResults) => {
 
         if (err) {
-          console.error(err);
-
+          console.error("❌ Database query error (check user):", err.message);
           return res.status(500).json({
             message: 'Database error',
-            bookingId: null
+            bookingId: null,
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
           });
         }
 
@@ -58,11 +58,11 @@ const createBooking = (req, res) => {
           (err, result) => {
 
             if (err) {
-              console.error(err);
-
+              console.error("❌ Database query error (create booking):", err.message);
               return res.status(500).json({
                 message: 'Database error',
-                bookingId: null
+                bookingId: null,
+                details: process.env.NODE_ENV === 'development' ? err.message : undefined
               });
             }
 
@@ -112,10 +112,11 @@ const getBookings = (req, res) => {
     db.query(query, values, (err, results) => {
 
       if (err) {
-        console.error(err);
+        console.error("❌ Database query error (get bookings):", err.message);
 
         return res.status(500).json({
-          error: 'Database error'
+          error: 'Database error',
+          details: process.env.NODE_ENV === 'development' ? err.message : undefined
         });
       }
 

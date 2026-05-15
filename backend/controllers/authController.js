@@ -22,9 +22,11 @@ const register = async (req, res) => {
       async (err, results) => {
 
         if (err) {
-          console.error(err);
+          console.error("❌ Database query error (register/check):", err.message);
+          console.error("Error Code:", err.code);
           return res.status(500).json({
-            error: 'Database error'
+            error: 'Database error',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
           });
         }
 
@@ -45,9 +47,11 @@ const register = async (req, res) => {
           (err, result) => {
 
             if (err) {
-              console.error(err);
+              console.error("❌ Database query error (register/insert):", err.message);
+              console.error("Error Code:", err.code);
               return res.status(500).json({
-                error: 'Database error'
+                error: 'Database error',
+                details: process.env.NODE_ENV === 'development' ? err.message : undefined
               });
             }
 
@@ -93,10 +97,12 @@ const login = async (req, res) => {
       async (err, results) => {
 
         if (err) {
-          console.error(err);
+          console.error("❌ Database query error (login):", err.message);
+          console.error("Error Code:", err.code);
 
           return res.status(500).json({
-            error: 'Database error'
+            error: 'Database error',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
           });
         }
 
