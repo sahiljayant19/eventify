@@ -1,0 +1,6 @@
+.fade-opacity {
+    opacity: .8;
+}
+.invert {
+    filter: invert(1);
+}

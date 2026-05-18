@@ -1,0 +1,122 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node.js & npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+*.iml
+*.ipr
+*.iws
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build & Distribution
+dist/
+build/
+.cache/
+.parcel-cache/
+out/
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+jest-coverage/
+*.lcov
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Logs
+logs/
+*.log
+
+# Runtime Data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# npm Cache
+.npm
+.eslintcache
+
+# Dependency Directories
+jspm_packages/
+node_modules/
+
+# Optional REPL History
+.node_repl_history
+
+# Secrets & Credentials
+.ssh/
+*.pem
+*.key
+*.crt
+
+# Backup Files
+*.bak
+*.backup
+*.swp
+
+# System Files
+.AppleDouble
+.LSOverride
+
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless

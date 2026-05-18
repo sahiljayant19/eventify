@@ -1,0 +1,83 @@
+.icons .icon:hover {
+    background-color: rgba(255, 255, 255, .831);
+    opacity: 1
+}
+
+.user-icon:hover {
+    opacity: 1;
+}
+
+
+.sg-btn:hover {
+    background-color: #0052a3;
+}
+
+
+.select-state:hover {
+    color: #0066cc;
+}
+
+.select-state:focus {
+    outline: none;
+}
+
+
+.google-btn:hover {
+    background: #f9f9f9;
+}
+
+
+.event-card:hover {
+    transform: scale(1.05);
+}
+
+.book-btn:hover {
+    background: #0052a3;
+}
+
+.white-home-line:hover {
+    background-color: rgba(0, 102, 204, 0.08);
+}
+
+.left-line ul li:hover {
+    color: #0066cc;
+}
+
+.movie {
+    transition: transform 0.3s ease;
+}
+
+.movie:hover {
+    transform: scale(1.05);
+}
+
+.boxes .set-height:hover img {
+    transform: translateY(-5px);
+}
+
+.footer-section ul li a:hover {
+    color: #0066cc;
+    transform: translateX(5px);
+}
+
+.app-btn:hover {
+    background: rgba(0, 102, 204, 0.1);
+    transform: translateY(-2px);
+}
+
+.subscribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+}
+
+
+.social-icon:hover {
+    color: #0066cc;
+    transform: translateY(-3px);
+    border-color: #0077b5;
+    background: rgba(255, 255, 255, 0.949);
+}
+
+/* 
+ all effect code should be here, like :focus :hover and any effects
+*/

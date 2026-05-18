@@ -1,0 +1,176 @@
+/* Booking Cards CSS - Separate from main styles */
+
+/* Navbar styling for Bookings Page */
+.navbar {
+    background: var(--surface-bg);
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 64px;
+}
+
+.navbar>:first-child img {
+    position: relative;
+    top: 0;
+}
+
+:root[data-theme="dark"] .navbar>:first-child img {
+    /* filter: invert(1); */
+}
+
+.nav-simple a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft);
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="dark"] .nav-simple a {
+    background: var(--surface-muted);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+:root[data-theme="dark"] .nav-simple a:hover {
+    background: var(--accent);
+    color: var(--button-text);
+}
+
+
+.no-bookings {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--surface-muted);
+    border-radius: 20px;
+    margin: 40px 0;
+    border: 1px solid var(--border-muted);
+}
+
+.no-bookings .empty-state {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.no-bookings .empty-state h3 {
+    color: var(--accent);
+    font-size: 2em;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.no-bookings .empty-state p {
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.no-bookings .primary-btn {
+    display: inline-block;
+    width: 50%;
+    background: var(--accent);
+    color: var(--button-text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.no-bookings .primary-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.bookings-container {
+    margin: 0 100px;
+}
+
+.event-card {
+    width: 280px;
+    background: var(--surface-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    padding-bottom: 26px;
+    margin-top: 10px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.event-img {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+
+/* Additional booking-specific styles */
+.event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    border-color: var(--accent);
+}
+
+.event-details {
+    padding: 20px;
+}
+
+.event-details h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.event-meta {
+    margin: 10px 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.ticket-row .booking-id {
+    color: var(--accent);
+    font-size: 1.1em;
+}
+
+.event-pricing {
+    margin: 15px 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.status-badge {
+    background: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+:root[data-theme="dark"] .status-badge {
+    background: #1e7e34;
+}

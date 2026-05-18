@@ -1,0 +1,90 @@
+/* Mobile Performance Optimizations */
+@media (max-width: 799px) {
+
+    /* Reduce complex gradients for mobile performance */
+    body {
+        /* Replace complex gradients with solid colors on mobile */
+        background: var(--page-bg) !important;
+    }
+
+    /* Fix navbar colors to match theme */
+    .navbar {
+        background: var(--surface-bg) !important;
+        border-bottom: 1px solid var(--border-soft) !important;
+    }
+
+    .navLeft {
+        background: var(--surface-bg) !important;
+    }
+
+    /* Optimize animated elements */
+    .themed-divider .divider-glow {
+        background: var(--border-muted) !important;
+        box-shadow: none !important;
+    }
+
+    .premiere-wrapper {
+        background: var(--surface-muted) !important;
+        background-color: var(--surface-muted) !important;
+    }
+
+    /* Simplify button gradients */
+    .book-btn,
+    .primary-btn,
+    .sg-btn {
+        background: var(--accent) !important;
+        background-image: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    /* Optimize footer */
+    footer {
+        background: var(--page-bg) !important;
+    }
+
+    /* Disable heavy animations on mobile */
+    .event-card {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* Reduce shadow effects */
+    .payment-popup,
+    .auth-box {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Optimize images */
+    img {
+        transform: translateZ(0) !important;
+        backface-visibility: hidden !important;
+    }
+
+    /* Remove filter for dark theme */
+    :root[data-theme="dark"] .hidden-logo {
+        filter: invert(1);
+    }
+
+    :root[data-theme="dark"] .mobile-nav-links a::after {
+        background-color: rgba(255, 255, 255, 0.609);
+    }
+
+    /* Navbar logo filter for light theme (support, bookings, payment pages) */
+    .navbar a>img {
+        filter: none;
+    }
+
+    :root[data-theme="dark"] .navbar a>img {
+        filter: none;
+    }
+
+    :root[data-theme="dark"] .navbar .mobile-logo-img {
+        filter: invert(1) !important;
+    }
+
+    /* Improve scrolling performance */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        overflow: auto !important;
+    }
+}
