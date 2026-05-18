@@ -89,11 +89,11 @@ The frontend API base URL is configured in [JavaScript/api-config.js](JavaScript
 
 ```js
 window.EVENTIFY_API_BASE_URL = isLocalhost
-  ? 'http://localhost:8080/api'
+  ? 'http://localhost:3000/api'
   : 'https://eventify-b3n8.onrender.com/api';
 ```
 
-When running locally, the frontend calls `http://localhost:8080/api`. When deployed, it calls the Render backend.
+When running locally, the frontend calls `http://localhost:3000/api`. When deployed, it calls the Render backend.
 
 ## Getting Started Locally
 
