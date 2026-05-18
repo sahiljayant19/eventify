@@ -60,85 +60,109 @@ function hideElements(element) { // hide elements to prevent showing elements in
     element.style.display = 'none';
 }
 
+function setNavbarAuthState(isAuthenticated) {
+    if (nav) {
+        nav.classList.toggle('is-authenticated', isAuthenticated);
+    }
+}
+
 // Helper to sync navbar auth UI with stored user
 function applyStoredUserToNavbar() {
+    const mobileUserBadge = document.getElementById('mobileUserBadge');
+    const mobileUserDisplayName = document.getElementById('mobileUserDisplayName');
+
     try {
         const stored = localStorage.getItem('eventifyUser');
         if (stored) {
             const user = JSON.parse(stored);
             const displayName = user.username || user.email;
             if (displayName) {
-                signInBtn.style.display = 'none';
-                userDisplayName.textContent = displayName;
-                userDisplayName.style.display = 'inline-block';
-                userIcon.style.display = 'inline-block';
-                signOutBtn.style.display = 'inline-block';
+                setNavbarAuthState(true);
+                // Desktop
+                if (signInBtn) signInBtn.style.display = 'none';
+                if (userDisplayName) {
+                    userDisplayName.textContent = displayName;
+                    userDisplayName.style.display = 'inline-block';
+                }
+                if (userIcon) userIcon.style.display = 'inline-block';
+                if (signOutBtn) signOutBtn.style.display = 'inline-block';
+
+                // Mobile Header Badge
+                if (mobileUserBadge) mobileUserBadge.style.display = 'flex';
+                if (mobileUserDisplayName) mobileUserDisplayName.textContent = displayName;
                 return;
             }
         }
         // Default state when no user stored or invalid user data
-        userDisplayName.textContent = '';
-        userDisplayName.style.display = 'none';
-        userIcon.style.display = 'none';
-        signOutBtn.style.display = 'none';
-        signInBtn.style.display = 'inline-block';
+        setNavbarAuthState(false);
+        if (userDisplayName) {
+            userDisplayName.textContent = '';
+            userDisplayName.style.display = 'none';
+        }
+        if (userIcon) userIcon.style.display = 'none';
+        if (signOutBtn) signOutBtn.style.display = 'none';
+        if (signInBtn) signInBtn.style.display = 'inline-block';
+
+        // Mobile Header Badge
+        if (mobileUserBadge) mobileUserBadge.style.display = 'none';
+        if (mobileUserDisplayName) mobileUserDisplayName.textContent = '';
     } catch (e) {
         console.error('Failed to read stored user', e);
         // Default state on error
-        userDisplayName.textContent = '';
-        userDisplayName.style.display = 'none';
-        userIcon.style.display = 'none';
-        signOutBtn.style.display = 'none';
-        signInBtn.style.display = 'inline-block';
+        setNavbarAuthState(false);
+        if (userDisplayName) {
+            userDisplayName.textContent = '';
+            userDisplayName.style.display = 'none';
+        }
+        if (userIcon) userIcon.style.display = 'none';
+        if (signOutBtn) signOutBtn.style.display = 'none';
+        if (signInBtn) signInBtn.style.display = 'inline-block';
+
+        if (mobileUserBadge) mobileUserBadge.style.display = 'none';
+        if (mobileUserDisplayName) mobileUserDisplayName.textContent = '';
     }
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 600) { // Runtime condition
-        nav.style.height = '64px';
-        toggleNav.style.display = 'flex';
-        // Hide mobile navigation links when going to desktop view
-        if (mobileNavLinks) {
-            mobileNavLinks.style.display = 'none';
-        }
-        show_el.map(showElements);
-        // Re-apply auth UI state so sign in doesn't reappear when logged in
+    if (window.innerWidth > 600) {
+        // Close mobile drawer when resizing to desktop
+        nav.classList.remove('menu-open');
+        menu.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        // Clear any inline styles that may have been set previously
+        toggleNav.style.removeProperty('display');
+        nav.style.removeProperty('height');
+        nav.style.removeProperty('transition');
+        if (mobileNavLinks) mobileNavLinks.style.removeProperty('display');
+        // Re-apply auth UI so sign-in doesn't re-appear when logged in
         applyStoredUserToNavbar();
-        menuClicked = false; // prevent to disappear showing elements in mobile screen during click like search box and sign in button
-        menu.innerHTML = `<img src="Resource/img/menu.png" alt="" width="30px" id="menuImg">`;
-    }
-    else if (window.innerWidth <= 600 && menuClicked == false) { // Runtime condition
-        hide_el.map(hideElements);
+        menuClicked = false;
+    } else if (!menuClicked) {
+        // Collapsed mobile state — hide the drawer content
+        toggleNav.style.display = 'none';
     }
 });
 
 menu.addEventListener('click', () => {
-    menuClicked = true; // menuClicked will be true if user clicks on menu button
-    if (toggleNav.style.display == 'flex') { // Condition for hide elements
-        menu.innerHTML = `<img src="Resource/img/menu.png" alt="" width="30px" id="menuImg">`
-        nav.style.height = '64px';
-        // Hide mobile navigation links
-        if (mobileNavLinks) {
-            mobileNavLinks.style.display = 'none';
-        }
-        setTimeout(() => {
-            hide_el.map(hideElements);
-        }, 50);
-    }
-    else { // Condition for show elements
-        menu.innerHTML = `<img src="Resource/img/close.png" alt="" width="25px" id="menuImg">`
-        nav.style.transition = '0.5s';
-        nav.style.height = '400px';
-        setTimeout(() => {
-            toggleNav.style.display = 'flex';
-            // Show mobile navigation links
-            if (mobileNavLinks) {
-                mobileNavLinks.style.display = 'flex';
-            }
-            show_el.map(showElements);
-            // Ensure auth UI stays consistent when menu opens in mobile view
-            applyStoredUserToNavbar();
-        }, 100);
+    menuClicked = true;
+    const isOpened = nav.classList.contains('menu-open');
+    if (isOpened) {
+        // CLOSE drawer
+        nav.classList.remove('menu-open');
+        menu.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        // Drawer is hidden by CSS (.navLeft.toggle-nav { display: none !important })
+        // Remove the inline display override so the CSS rule takes over
+        toggleNav.style.removeProperty('display');
+        if (mobileNavLinks) mobileNavLinks.style.removeProperty('display');
+    } else {
+        // OPEN drawer
+        nav.classList.add('menu-open');
+        menu.classList.add('active');
+        document.body.classList.add('no-scroll');
+        // Drawer shown by CSS (.menu-open .navLeft.toggle-nav { display: flex !important })
+        // Sync auth state so user badge / sign-in button is correct
+        applyStoredUserToNavbar();
     }
 });
 
@@ -281,6 +305,9 @@ loginBtn.addEventListener('click', () => {
     }
 
     const payload = { email, password };
+    const originalLoginText = loginBtn.textContent;
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Logging in...';
 
     fetch(`${window.EVENTIFY_API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -301,36 +328,25 @@ loginBtn.addEventListener('click', () => {
             const user = data.user || data;
             const displayName = user.username || user.email;
             showPopupMessage('Login Successful!', `Welcome back, ${displayName}!`, 'success');
-            // store basic user info in localStorage (no JWT yet)
+            // Store basic user info in localStorage
             localStorage.setItem('eventifyUser', JSON.stringify(user));
-            // update navbar: hide sign in, show name + sign out + user icon
-            signInBtn.style.display = 'none';
-            userDisplayName.textContent = displayName;
-            userDisplayName.style.display = 'inline-block';
-            userIcon.style.display = 'inline-block';
-            signOutBtn.style.display = 'inline-block';
             authModal.style.display = 'none';
-
-            // Force immediate display update
-            setTimeout(() => {
-                userDisplayName.style.display = 'inline-block';
-                userIcon.style.display = 'inline-block';
-            }, 100);
+            // Update all navbar auth UI (desktop + mobile badge) in one place
+            applyStoredUserToNavbar();
         })
         .catch((err) => {
             console.error(err);
             alert(err.message || 'Could not login. Make sure backend is running.');
+        })
+        .finally(() => {
+            loginBtn.disabled = false;
+            loginBtn.textContent = originalLoginText;
         });
 });
 
 // On page load, keep user logged-in display if info exists
-window.addEventListener('DOMContentLoaded', () => {
-    applyStoredUserToNavbar();
-    // Hide mobile navigation links by default
-    if (mobileNavLinks) {
-        mobileNavLinks.style.display = 'none';
-    }
-});
+// Module scripts are deferred — DOM is ready when this runs
+applyStoredUserToNavbar();
 
 // Sign out: clear local storage and restore Sign in button
 signOutBtn.addEventListener('click', () => {
@@ -392,11 +408,27 @@ closeBookingModal.addEventListener('click', () => {
 });
 
 bookingTickets.addEventListener('input', () => {
-    const tickets = Math.max(1, Number(bookingTickets.value) || 1);
-    bookingTickets.value = tickets;
-
     const priceText = bookingPricePerTicket.value;
     const price = parsePrice(priceText);
+
+    if (bookingTickets.value === '') {
+        bookingTotalAmount.value = formatCurrency(0);
+        return;
+    }
+
+    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
+    bookingTickets.value = tickets;
+
+    const total = tickets * price;
+    bookingTotalAmount.value = formatCurrency(total);
+});
+
+bookingTickets.addEventListener('blur', () => {
+    const priceText = bookingPricePerTicket.value;
+    const price = parsePrice(priceText);
+    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
+    bookingTickets.value = tickets;
+
     const total = tickets * price;
     bookingTotalAmount.value = formatCurrency(total);
 });
@@ -411,7 +443,8 @@ bookingForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    const tickets = Number(bookingTickets.value) || 1;
+    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
+    bookingTickets.value = tickets;
     const pricePerTicket = parsePrice(bookingPricePerTicket.value);
     const totalAmount = tickets * pricePerTicket;
 
@@ -525,11 +558,7 @@ function showSignOutConfirmation() {
 // Proceed with sign out
 function proceedWithSignOut() {
     localStorage.removeItem('eventifyUser');
-    userDisplayName.textContent = '';
-    userDisplayName.style.display = 'none';
-    userIcon.style.display = 'none';
-    signOutBtn.style.display = 'none';
-    signInBtn.style.display = 'inline-block';
+    applyStoredUserToNavbar();
 
     // Show success message
     showPopupMessage('Signed Out', 'You have been successfully signed out.', 'success');
@@ -575,4 +604,25 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+});
+
+const subscribeBtn = document.getElementById('subscribeBtn');
+subscribeBtn.addEventListener('click', () => {
+    const email = document.getElementById('emailAddr').value;
+    const isValidEmail = checkEmail(email); // checks the format of the email
+    if (!isValidEmail) return;
+
+    subscribeBtn.style.backgroundColor = '#07f543';
+    subscribeBtn.style.color = 'black'
+    subscribeBtn.style.padding = '12px 20px';
+
+    subscribeBtn.innerHTML = `
+        Subscribed 
+        <img src="Resource/img/checkbox.gif" width="20" >
+    `;
+
+    setTimeout(() => {
+        subscribeBtn.style = '';
+        subscribeBtn.innerHTML = 'Subscribe';
+    }, 3000);
 });

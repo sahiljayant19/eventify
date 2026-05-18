@@ -78,6 +78,10 @@
         filter: none;
     }
 
+    :root[data-theme="dark"] .navbar .mobile-logo-img {
+        filter: invert(1) !important;
+    }
+
     /* Improve scrolling performance */
     body {
         -webkit-overflow-scrolling: touch !important;

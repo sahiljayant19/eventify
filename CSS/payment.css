@@ -406,6 +406,7 @@
 .input-group select {
     width: 100%;
     padding: 15px;
+    box-sizing: border-box;
     border: 2px solid var(--border-muted);
     border-radius: 10px;
     font-size: 1em;

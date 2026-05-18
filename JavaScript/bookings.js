@@ -271,29 +271,14 @@ function generateTicketQRCode(booking) {
     qrContainer.innerHTML = '';
     
     try {
-        // Get user info safely
-        const userStr = localStorage.getItem('eventifyUser');
-        let userEmail = 'N/A';
-        if (userStr) {
-            try {
-                const user = JSON.parse(userStr);
-                userEmail = user.email || 'N/A';
-            } catch (e) {
-                console.error('Error parsing user data for QR code:', e);
-            }
-        }
-
-        // Create ticket data for QR code
         const ticketData = {
             bookingId: booking.bookingId || booking.id || 'N/A',
-            eventName: booking.eventName || 'Event',
-            tickets: booking.tickets || 1,
-            customerEmail: userEmail,
-            timestamp: booking.timestamp || new Date().toISOString()
+            tickets: booking.tickets || 1
         };
-        
-        // Convert to JSON string for QR code
-        const qrText = JSON.stringify(ticketData);
+
+        // Keep the QR payload compact. qrcodejs uses a small default QR version,
+        // so long JSON can overflow on mobile when viewing saved bookings.
+        const qrText = `EVENTIFY|BOOKING:${ticketData.bookingId}|TICKETS:${ticketData.tickets}`;
         
         // Check if QRCode library is available
         if (typeof QRCode !== 'undefined') {
@@ -303,7 +288,7 @@ function generateTicketQRCode(booking) {
                 height: 180,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel ? QRCode.CorrectLevel.H : 2
+                correctLevel: QRCode.CorrectLevel ? QRCode.CorrectLevel.M : 0
             });
         } else {
             console.warn('QRCode library not found, using fallback');
@@ -363,7 +348,7 @@ function downloadTicket() {
     const ticketContent = generateTicketText(currentBookingData);
     
     // Create a blob and download
-    const blob = new Blob([ticketContent], { type: 'text/plain' });
+    const blob = new Blob([ticketContent], { type: 'text/plain;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -401,39 +386,39 @@ function generateTicketText(booking) {
     const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
     
     return `
-╔══════════════════════════════════════════════════════════════╗
-║                        EVENTIFY TICKET                         ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                                ║
-║  EVENT DETAILS                                                 ║
-║  ──────────────────────────────────────────────────────────  ║
-║  Event Name: ${booking.eventName || 'N/A'}
-║  Date & Venue: ${booking.eventMeta || 'TBD'}
-║  Booking ID: ${booking.bookingId || booking.id || 'N/A'}
-║                                                                ║
-║  BOOKING DETAILS                                              ║
-║  ──────────────────────────────────────────────────────────  ║
-║  Tickets: ${booking.tickets || 1}
-║  Price per Ticket: ₹${Number(booking.pricePerTicket || 0).toLocaleString('en-IN')}
-║  Total Amount: ₹${Number(booking.totalAmount || 0).toLocaleString('en-IN')}
-║  Payment Method: ${booking.paymentMethod || 'UPI'}
-║  Payment Status: ${booking.paymentStatus || 'Completed'}
-║                                                                ║
-║  CUSTOMER INFORMATION                                         ║
-║  ──────────────────────────────────────────────────────────  ║
-║  Name: ${user?.username || user?.email || 'Customer Name'}
-║  Email: ${user?.email || 'customer@email.com'}
-║  Booking Date: ${bookingDate}
-║                                                                ║
-║  IMPORTANT INSTRUCTIONS                                       ║
-║  ──────────────────────────────────────────────────────────  ║
-║  • Please arrive at the venue 30 minutes before the event     ║
-║  • Carry a valid ID proof along with this ticket              ║
-║  • This ticket is non-transferable and non-refundable         ║
-║  • QR code will be scanned at the entry point                 ║
-║  • For any issues, contact our support team                   ║
-║                                                                ║
-╚══════════════════════════════════════════════════════════════╝
++------------------------------------------------------------+
+|                       EVENTIFY TICKET                      |
++------------------------------------------------------------+
+
+EVENT DETAILS
+--------------------------------------------------------------
+Event Name: ${booking.eventName || 'N/A'}
+Date & Venue: ${booking.eventMeta || 'TBD'}
+Booking ID: ${booking.bookingId || booking.id || 'N/A'}
+
+BOOKING DETAILS
+--------------------------------------------------------------
+Tickets: ${booking.tickets || 1}
+Price per Ticket: INR ${Number(booking.pricePerTicket || 0).toLocaleString('en-IN')}
+Total Amount: INR ${Number(booking.totalAmount || 0).toLocaleString('en-IN')}
+Payment Method: ${booking.paymentMethod || 'UPI'}
+Payment Status: ${booking.paymentStatus || 'Completed'}
+
+CUSTOMER INFORMATION
+--------------------------------------------------------------
+Name: ${user?.username || user?.email || 'Customer Name'}
+Email: ${user?.email || 'customer@email.com'}
+Booking Date: ${bookingDate}
+
+IMPORTANT INSTRUCTIONS
+--------------------------------------------------------------
+- Please arrive at the venue 30 minutes before the event
+- Carry a valid ID proof along with this ticket
+- This ticket is non-transferable and non-refundable
+- QR code will be scanned at the entry point
+- For any issues, contact our support team
+
++------------------------------------------------------------+
 `;
 }
 

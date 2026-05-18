@@ -392,6 +392,12 @@
         padding: 40px 20px;
     }
 
+    .hero-visual {
+        width: 100%;
+        max-width: none;
+        grid-template-columns: 1fr;
+    }
+
     .hero-title {
         font-size: 2.5rem;
     }
@@ -423,6 +429,8 @@
     }
 
     .floating-card {
+        width: 100%;
+        box-sizing: border-box;
         padding: 20px 15px;
     }
 
