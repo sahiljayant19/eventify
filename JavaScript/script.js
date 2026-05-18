@@ -624,5 +624,6 @@ subscribeBtn.addEventListener('click', () => {
     setTimeout(() => {
         subscribeBtn.style = '';
         subscribeBtn.innerHTML = 'Subscribe';
+        document.getElementById('emailAddr').value = ''
     }, 3000);
 });
