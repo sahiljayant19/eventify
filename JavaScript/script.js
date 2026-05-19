@@ -232,11 +232,6 @@ function checkEmail(email) { // check if the email is valid
 }
 
 
-registerEmail.addEventListener('input', () => {
-
-})
-
-
 registerBtn.addEventListener('click', () => {
     const name = registerName.value.trim();
     const register_email = registerEmail.value.trim();
