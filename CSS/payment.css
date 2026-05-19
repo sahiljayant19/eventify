@@ -358,32 +358,107 @@
 /* Payment Status */
 .payment-status {
     text-align: center;
-    padding: 20px;
+    padding: 28px 24px;
     background: var(--surface-muted);
-    border-radius: 10px;
+    border-radius: 14px;
     border: 2px solid var(--accent);
+    margin-top: 10px;
 }
 
 .status-pending {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 14px;
     color: var(--accent);
 }
 
+.status-pending p {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.status-pending small {
+    font-size: 1.5em;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Success State */
+.status-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: #28a745;
+}
+
+.status-success img {
+    width: 48px;
+    height: 48px;
+    filter: none;
+}
+
+:root[data-theme="dark"] .status-success img {
+    filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(90%);
+}
+
+.status-success p {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Error State */
+.status-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: #dc3545;
+}
+
+.status-error p {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Status icon sizing */
+.status-icon {
+    width: 48px;
+    height: 48px;
+}
+
 .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0, 102, 204, 0.3);
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(0, 102, 204, 0.25);
     border-top: 3px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
+:root[data-theme="dark"] .spinner {
+    border-color: rgba(100, 160, 255, 0.2);
+    border-top-color: var(--accent);
+}
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Card Payment Form */
@@ -496,21 +571,21 @@
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .qr-container {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .payment-progress {
         flex-wrap: wrap;
     }
-    
+
     .progress-step {
         min-width: 150px;
         margin-bottom: 10px;
     }
-    
+
     .progress-step:not(:last-child)::after {
         display: none;
     }
@@ -521,24 +596,24 @@
         margin: 20px auto;
         padding: 0 15px;
     }
-    
+
     .booking-summary,
     .payment-methods {
         padding: 20px;
     }
-    
+
     .payment-tabs {
         flex-direction: column;
     }
-    
+
     .tab-btn {
         justify-content: center;
     }
-    
+
     .input-row {
         grid-template-columns: 1fr;
     }
-    
+
     .accepted-cards {
         flex-direction: column;
         align-items: center;
@@ -552,13 +627,13 @@
         padding: 10px;
     }
 
-    .navbar > a:first-child {
+    .navbar>a:first-child {
         position: absolute;
         left: 10px;
         top: 10px;
     }
 
-    .navbar > a:first-child img {
+    .navbar>a:first-child img {
         width: 120px;
         height: auto;
         position: static;
@@ -576,13 +651,4 @@
         font-size: 14px;
         margin-top: 20px;
     }
-}
-
-/* Footer Icons Dark Theme Support */
-:root[data-theme="dark"] .social-icon svg {
-    filter: invert(1);
-}
-
-:root[data-theme="dark"] .app-btn svg {
-    filter: invert(1);
 }

@@ -169,6 +169,8 @@ menu.addEventListener('click', () => {
 signInBtn.addEventListener('click', () => { // show authentication modal when user clicks on sign in button
     clearAuthFields();
     authModal.style.display = 'flex';
+    authModal.style.zIndex = '999999';
+    nav.style.display = 'none'
 
 });
 
