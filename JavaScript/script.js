@@ -170,7 +170,6 @@ signInBtn.addEventListener('click', () => { // show authentication modal when us
     clearAuthFields();
     authModal.style.display = 'flex';
     authModal.style.zIndex = '999999';
-    nav.style.display = 'none'
 
 });
 
