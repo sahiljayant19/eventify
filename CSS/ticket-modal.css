@@ -46,7 +46,7 @@
     background: none;
     border: none;
     color: var(--button-text);
-    font-size: 2em;
+    font-size: 4em;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -266,38 +266,38 @@
         max-height: 90vh;
         width: calc(100% - 20px);
     }
-    
+
     .ticket-modal-header {
         padding: 20px;
     }
-    
+
     .ticket-modal-header h2 {
         font-size: 1.5em;
     }
-    
+
     .ticket-body {
         padding: 20px;
     }
-    
+
     .ticket-section {
         padding: 20px;
     }
-    
+
     .ticket-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
     }
-    
+
     .ticket-row .value {
         text-align: left;
     }
-    
+
     .ticket-modal-footer {
         flex-direction: column;
         padding: 15px 20px;
     }
-    
+
     .download-ticket-btn,
     .print-ticket-btn {
         width: 100%;
@@ -309,15 +309,15 @@
     .ticket-modal-header h2 {
         font-size: 1.3em;
     }
-    
+
     .ticket-section h3 {
         font-size: 1.1em;
     }
-    
+
     .ticket-body {
         padding: 15px;
     }
-    
+
     .ticket-section {
         padding: 15px;
     }

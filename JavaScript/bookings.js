@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadUserBookings() {
     // Check if user is logged in
     const user = JSON.parse(localStorage.getItem('eventifyUser'));
-    
+
     if (!user) {
         showNoBookings('Please sign in to view your bookings.');
         return;
@@ -61,14 +61,14 @@ function displayBookings(bookings) {
                             <p><strong>Date:</strong> ${booking.eventMeta || 'TBD'}</p>
                             <p style="margin-top: 10px"><strong>Booking ID:</strong> #${booking.id}</p>
                             <p style="margin-top: 10px"><strong>Booking Date:</strong> ${booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            }) : new Date().toLocaleDateString('en-IN', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            })}</p>
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }) : new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    })}</p>
                             <p style="margin-top: 10px"><strong>Status:</strong> <span class="status-badge">Confirmed</span></p>
                         </div>
                         <div class="event-pricing">
@@ -79,7 +79,7 @@ function displayBookings(bookings) {
                     </div>
                     <div class="event-actions">
                         <button class="book-btn" onclick="viewTicket('${booking.id}')">View Ticket</button>
-                        <button class="book-btn" onclick="cancelBooking('${booking.id}')" style="background: #dc3545;">Cancel Booking</button>
+                        <button class="book-btn cancel-btn" onclick="cancelBooking('${booking.id}')">Cancel Booking</button>
                     </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@ let currentBookingData = null;
 
 async function viewTicket(bookingId) {
     console.log('Viewing ticket for booking ID:', bookingId);
-    
+
     try {
         // Fetch full booking details
         const response = await fetch(`${window.EVENTIFY_API_BASE_URL}/bookings/${bookingId}`, {
@@ -128,21 +128,21 @@ async function viewTicket(bookingId) {
 
         const booking = await response.json();
         console.log('Booking data received:', booking);
-        
+
         currentBookingData = booking;
-        
+
         // Populate ticket modal with booking details
         populateTicketModal(booking);
-        
+
         // Show the modal
         showTicketModal();
-        
+
         // Generate QR code for the ticket after the modal is visible.
         generateTicketQRCode(booking);
-        
+
     } catch (error) {
         console.error('Error viewing ticket:', error);
-        
+
         // Fallback: try to get booking data from the displayed bookings
         const bookingCards = document.querySelectorAll('.movie');
         for (let card of bookingCards) {
@@ -151,13 +151,13 @@ async function viewTicket(bookingId) {
                 // Extract booking data from the card
                 const eventName = card.querySelector('h3')?.textContent;
                 const eventMeta = card.querySelector('.event-meta p')?.textContent;
-                
+
                 // Extract pricing information more carefully
                 const pricingRows = card.querySelectorAll('.event-pricing p');
                 let tickets = 1;
                 let pricePerTicket = 0;
                 let totalAmount = 0;
-                
+
                 pricingRows.forEach(row => {
                     const text = row.textContent;
                     if (text.includes('Tickets:')) {
@@ -171,9 +171,9 @@ async function viewTicket(bookingId) {
                         if (match) totalAmount = parseInt(match[1].replace(/,/g, ''));
                     }
                 });
-                
+
                 console.log('Extracted data:', { eventName, eventMeta, tickets, pricePerTicket, totalAmount });
-                
+
                 if (eventName) {
                     const fallbackBooking = {
                         id: bookingId,
@@ -187,7 +187,7 @@ async function viewTicket(bookingId) {
                         paymentStatus: 'Completed',
                         timestamp: new Date().toISOString()
                     };
-                    
+
                     console.log('Using fallback booking data:', fallbackBooking);
                     currentBookingData = fallbackBooking;
                     showTicketModal();
@@ -197,14 +197,14 @@ async function viewTicket(bookingId) {
                 }
             }
         }
-        
+
         alert('Failed to load ticket details. Please try again.');
     }
 }
 
 function populateTicketModal(booking) {
     console.log('Populating ticket modal with booking:', booking);
-    
+
     // Check if modal elements exist
     const modalElements = {
         ticketEventName: document.getElementById('ticketEventName'),
@@ -219,35 +219,35 @@ function populateTicketModal(booking) {
         ticketCustomerEmail: document.getElementById('ticketCustomerEmail'),
         ticketBookingDate: document.getElementById('ticketBookingDate')
     };
-    
+
     // Log missing elements
     const missingElements = Object.entries(modalElements)
         .filter(([id, element]) => !element)
         .map(([id]) => id);
-    
+
     if (missingElements.length > 0) {
         console.error('Missing modal elements:', missingElements);
         alert('Ticket modal elements not found. Please refresh the page.');
         return;
     }
-    
+
     // Event Details
     modalElements.ticketEventName.textContent = booking.eventName || 'Event Name';
     modalElements.ticketEventMeta.textContent = booking.eventMeta || 'Date & Venue TBD';
     modalElements.ticketBookingId.textContent = booking.bookingId || booking.id || 'N/A';
-    
+
     // Booking Details
     modalElements.ticketTickets.textContent = booking.tickets || 1;
     modalElements.ticketPricePerTicket.textContent = `₹${Number(booking.pricePerTicket || 0).toLocaleString('en-IN')}`;
     modalElements.ticketTotalAmount.textContent = `₹${Number(booking.totalAmount || 0).toLocaleString('en-IN')}`;
     modalElements.ticketPaymentMethod.textContent = booking.paymentMethod || 'UPI';
     modalElements.ticketPaymentStatus.textContent = booking.paymentStatus || 'Completed';
-    
+
     // Customer Information
     const user = JSON.parse(localStorage.getItem('eventifyUser'));
     modalElements.ticketCustomerName.textContent = user?.username || user?.email || 'Customer Name';
     modalElements.ticketCustomerEmail.textContent = user?.email || 'customer@email.com';
-    
+
     // Format booking date
     const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN', {
         day: 'numeric',
@@ -259,17 +259,17 @@ function populateTicketModal(booking) {
         year: 'numeric'
     });
     modalElements.ticketBookingDate.textContent = bookingDate;
-    
+
     console.log('Ticket modal populated successfully');
 }
 
 function generateTicketQRCode(booking) {
     const qrContainer = document.getElementById('ticketQRCode');
     if (!qrContainer) return;
-    
+
     // Clear existing QR code
     qrContainer.innerHTML = '';
-    
+
     try {
         const ticketData = {
             bookingId: booking.bookingId || booking.id || 'N/A',
@@ -279,7 +279,7 @@ function generateTicketQRCode(booking) {
         // Keep the QR payload compact. qrcodejs uses a small default QR version,
         // so long JSON can overflow on mobile when viewing saved bookings.
         const qrText = `EVENTIFY|BOOKING:${ticketData.bookingId}|TICKETS:${ticketData.tickets}`;
-        
+
         // Check if QRCode library is available
         if (typeof QRCode !== 'undefined') {
             new QRCode(qrContainer, {
@@ -343,10 +343,10 @@ function downloadTicket() {
         alert('No ticket data available');
         return;
     }
-    
+
     // Create ticket content for download
     const ticketContent = generateTicketText(currentBookingData);
-    
+
     // Create a blob and download
     const blob = new Blob([ticketContent], { type: 'text/plain;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
@@ -364,16 +364,16 @@ function printTicket() {
         alert('No ticket data available');
         return;
     }
-    
+
     // Create printable content
     const printContent = generateTicketHTML(currentBookingData);
-    
+
     // Open print window
     const printWindow = window.open('', '_blank');
     printWindow.document.write(printContent);
     printWindow.document.close();
     printWindow.focus();
-    
+
     // Wait for content to load, then print
     setTimeout(() => {
         printWindow.print();
@@ -384,7 +384,7 @@ function printTicket() {
 function generateTicketText(booking) {
     const user = JSON.parse(localStorage.getItem('eventifyUser'));
     const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
-    
+
     return `
 +------------------------------------------------------------+
 |                       EVENTIFY TICKET                      |
@@ -425,7 +425,7 @@ IMPORTANT INSTRUCTIONS
 function generateTicketHTML(booking) {
     const user = JSON.parse(localStorage.getItem('eventifyUser'));
     const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
-    
+
     return `
 <!DOCTYPE html>
 <html>
@@ -503,26 +503,26 @@ function generateTicketHTML(booking) {
 function testBookingData() {
     const bookingCards = document.querySelectorAll('.movie');
     console.log('Found booking cards:', bookingCards.length);
-    
+
     bookingCards.forEach((card, index) => {
         const viewBtn = card.querySelector('button[onclick*="viewTicket"]');
         if (viewBtn) {
             const onclick = viewBtn.getAttribute('onclick');
             console.log(`Card ${index + 1}:`, onclick);
-            
+
             // Extract booking ID from onclick
             const match = onclick.match(/viewTicket\('([^']+)'\)/);
             if (match) {
                 console.log(`Booking ID: ${match[1]}`);
-                
+
                 // Extract data from card
                 const eventName = card.querySelector('h3')?.textContent;
                 const eventMeta = card.querySelector('.event-meta p')?.textContent;
-                
+
                 // Extract pricing information
                 const pricingRows = card.querySelectorAll('.event-pricing p');
                 let pricingData = {};
-                
+
                 pricingRows.forEach(row => {
                     const text = row.textContent;
                     if (text.includes('Tickets:')) {
@@ -536,7 +536,7 @@ function testBookingData() {
                         if (match) pricingData.totalAmount = match[1];
                     }
                 });
-                
+
                 console.log(`Event Name: ${eventName}`);
                 console.log(`Event Meta: ${eventMeta}`);
                 console.log('Pricing Data:', pricingData);
@@ -575,14 +575,14 @@ function showCancelConfirmationPopup(bookingId) {
     const existingOverlay = document.querySelector('.popup-overlay');
     if (existingPopup) existingPopup.remove();
     if (existingOverlay) existingOverlay.remove();
-    
+
     // Create overlay
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    
+
     const popup = document.createElement('div');
     popup.className = 'eventify-popup';
-    
+
     popup.innerHTML = `
         <div class="popup-icon-container error">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
@@ -594,22 +594,22 @@ function showCancelConfirmationPopup(bookingId) {
             <button class="popup-btn popup-btn-danger confirm-cancel-btn">Yes, Cancel Booking</button>
         </div>
     `;
-    
+
     // Add click handlers
     const cancelBtn = popup.querySelector('.cancel-btn-popup');
     const confirmBtn = popup.querySelector('.confirm-cancel-btn');
-    
+
     cancelBtn.addEventListener('click', () => {
         popup.remove();
         overlay.remove();
     });
-    
+
     confirmBtn.addEventListener('click', () => {
         popup.remove();
         overlay.remove();
         proceedWithCancellation(bookingId);
     });
-    
+
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
 }
@@ -636,7 +636,7 @@ async function proceedWithCancellation(bookingId) {
         const successMessage = document.createElement('div');
         successMessage.className = 'eventify-popup';
         successMessage.style.maxWidth = '500px';
-        
+
         successMessage.innerHTML = `
             <div class="popup-icon-container success">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -656,18 +656,18 @@ async function proceedWithCancellation(bookingId) {
                 <button class="popup-btn popup-btn-primary" onclick="this.closest('.popup-overlay').remove()">OK</button>
             </div>
         `;
-        
+
         overlay.appendChild(successMessage);
         document.body.appendChild(overlay);
-        
+
         // Reload bookings after a short delay
         setTimeout(() => {
             loadUserBookings();
         }, 1000);
-        
+
     } catch (error) {
         console.error('Error cancelling booking:', error);
-        
+
         // Show error message
         const errorMessage = document.createElement('div');
         errorMessage.style.cssText = `
@@ -684,7 +684,7 @@ async function proceedWithCancellation(bookingId) {
             text-align: center;
             min-width: 450px;
         `;
-        
+
         errorMessage.innerHTML = `
             <div style="margin-bottom: 25px;">
                 <svg width="70" height="70" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px;">
@@ -709,7 +709,7 @@ async function proceedWithCancellation(bookingId) {
             " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 56, 93, 0.4)'" 
                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 56, 93, 0.3)'">OK</button>
         `;
-        
+
         document.body.appendChild(errorMessage);
     }
 }
