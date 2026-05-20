@@ -32,7 +32,7 @@
     .book-btn,
     .primary-btn,
     .sg-btn {
-        background: var(--accent) !important;
+        background: var(--accent);
         background-image: none !important;
         transition: background-color 0.3s ease !important;
     }

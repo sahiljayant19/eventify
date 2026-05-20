@@ -1,5 +1,6 @@
 /* Hide mobile-only header elements on desktop by default */
-.nav-mobile-header {
+.nav-mobile-header,
+.mobile-genre-filters {
     display: none;
 }
 
@@ -7,6 +8,9 @@
    1250px
 ========================= */
 @media (max-width:1250px) {
+    .logo {
+        display: none;
+    }
 
     Z .slider {
         height: 220px
@@ -45,9 +49,6 @@
         height: 150px
     }
 
-    .movies-images .movie {
-        margin-left: 10px;
-    }
 
     footer .section1 {
         margin-top: 100px;
@@ -70,11 +71,6 @@
    1024px
 ========================= */
 @media screen and (max-width: 1024px) {
-
-    .logo img {
-        height: 30px;
-        width: 80px
-    }
 
     .logo {
         height: 120px;
@@ -152,14 +148,9 @@
         width: 700px
     }
 
-    .logo img {
-        height: 30px;
-        width: 80px
-    }
-
     #search {
         height: 35px;
-        width: 300px;
+        width: 250px;
         font-size: 10px;
     }
 
@@ -315,6 +306,10 @@
    600px
 ========================= */
 @media (max-width:600px) {
+
+    .logo {
+        display: block;
+    }
 
     .navLine {
         display: none;
@@ -624,7 +619,6 @@
         height: 64px !important;
         display: flex !important;
         align-items: center !important;
-        justify-content: space-between !important;
         background: var(--surface-bg) !important;
         border-bottom: 1px solid var(--border-soft) !important;
         padding: 0 !important;
@@ -723,7 +717,8 @@
         width: 100% !important;
         padding: 14px 4px !important;
         color: var(--text-primary) !important;
-        font-size: 1.05rem !important;
+        font-size: 1.4rem !important;
+
         font-weight: 600 !important;
         line-height: 1.2 !important;
         text-decoration: none !important;
@@ -731,7 +726,51 @@
         box-sizing: border-box !important;
     }
 
-    .navLeft .login {
+    .navLeft .mobile-genre-filters {
+        display: grid !important;
+        grid-template-rows: repeat(2, auto) !important;
+        grid-auto-columns: max-content !important;
+        grid-auto-flow: column !important;
         order: 3 !important;
+        overflow-x: auto !important;
+        gap: 12px !important;
+        padding: 4px 0 !important;
+        margin: 8px 0 !important;
+        width: 100% !important;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        font-size: 1.3em !important;
+    }
+
+    .navLeft .mobile-genre-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .navLeft .mobile-genre-filters .genre-filter {
+        flex: 0 0 auto !important;
+        padding: 8px 16px !important;
+        background: var(--surface-bg, #f5f5f5) !important;
+        border: 1px solid var(--border-soft, #ddd) !important;
+        border-radius: 20px !important;
+        font-size: 1em !important;
+        color: var(--text-primary, #333) !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .navLeft .mobile-genre-filters .genre-filter.active {
+        background: var(--accent, #0066cc) !important;
+        color: white !important;
+        border-color: var(--accent, #0066cc) !important;
+    }
+
+    .navLeft .login {
+        order: 4 !important;
+    }
+
+    .navLeft .login #userIcon,
+    .navLeft .login #userDisplayName {
+        display: none !important;
     }
 }

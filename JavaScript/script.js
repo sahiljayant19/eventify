@@ -143,18 +143,24 @@ window.addEventListener('resize', () => {
     }
 });
 
+// Helper to close mobile drawer
+function closeMobileDrawer() {
+    if (nav.classList.contains('menu-open')) {
+        nav.classList.remove('menu-open');
+        menu.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        toggleNav.style.removeProperty('display');
+        if (mobileNavLinks) mobileNavLinks.style.removeProperty('display');
+        menuClicked = false;
+    }
+}
+
 menu.addEventListener('click', () => {
     menuClicked = true;
     const isOpened = nav.classList.contains('menu-open');
     if (isOpened) {
         // CLOSE drawer
-        nav.classList.remove('menu-open');
-        menu.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-        // Drawer is hidden by CSS (.navLeft.toggle-nav { display: none !important })
-        // Remove the inline display override so the CSS rule takes over
-        toggleNav.style.removeProperty('display');
-        if (mobileNavLinks) mobileNavLinks.style.removeProperty('display');
+        closeMobileDrawer();
     } else {
         // OPEN drawer
         nav.classList.add('menu-open');
@@ -167,6 +173,7 @@ menu.addEventListener('click', () => {
 });
 
 signInBtn.addEventListener('click', () => { // show authentication modal when user clicks on sign in button
+    closeMobileDrawer();
     clearAuthFields();
     authModal.style.display = 'flex';
     authModal.style.zIndex = '999999';
@@ -597,6 +604,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                // Close mobile drawer on selection
+                if (typeof closeMobileDrawer === 'function') {
+                    closeMobileDrawer();
+                }
             });
         });
     }

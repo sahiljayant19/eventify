@@ -11,10 +11,13 @@
     height: 64px;
 }
 
+.navLeft {
+    justify-content: space-around;
+}
+
 .navbar .logo img {
     position: relative;
-    top: 0;
-    left: 0;
+    top: 4px;
 }
 
 
