@@ -1,9 +1,11 @@
-const db = require('../db');
+const Booking = require('../models/Booking');
+const User = require('../models/User');
+const mongoose = require('mongoose');
 
-const createBooking = (req, res) => {
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+const createBooking = async (req, res) => {
   try {
-
     const {
       eventName,
       eventMeta,
@@ -13,212 +15,139 @@ const createBooking = (req, res) => {
       userId
     } = req.body;
 
-    if (!userId) {
+    if (!userId || !isValidObjectId(userId)) {
       return res.status(400).json({
-        message: 'User ID is required',
+        message: 'A valid user ID is required',
         bookingId: null
       });
     }
 
     // Check user exists
-    db.query(
-      'SELECT * FROM users WHERE id = ?',
-      [userId],
-      (err, userResults) => {
+    const user = await User.findById(userId);
 
-        if (err) {
-          console.error("❌ Database query error (check user):", err.message);
-          return res.status(500).json({
-            message: 'Database error',
-            bookingId: null,
-            details: process.env.NODE_ENV === 'development' ? err.message : undefined
-          });
-        }
-
-        if (userResults.length === 0) {
-          return res.status(404).json({
-            message: 'User not found',
-            bookingId: null
-          });
-        }
-
-        // Create booking
-        db.query(
-          `INSERT INTO bookings
-          (eventName, eventMeta, tickets, pricePerTicket, totalAmount, userId)
-          VALUES (?, ?, ?, ?, ?, ?)`,
-          [
-            eventName,
-            eventMeta,
-            tickets,
-            pricePerTicket,
-            totalAmount,
-            userId
-          ],
-          (err, result) => {
-
-            if (err) {
-              console.error("❌ Database query error (create booking):", err.message);
-              return res.status(500).json({
-                message: 'Database error',
-                bookingId: null,
-                details: process.env.NODE_ENV === 'development' ? err.message : undefined
-              });
-            }
-
-            res.status(201).json({
-              message: 'Booking created successfully',
-              bookingId: result.insertId.toString()
-            });
-
-          }
-        );
-
-      }
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      message: 'Internal server error',
-      bookingId: null
-    });
-
-  }
-
-};
-
-const getBookings = (req, res) => {
-
-  try {
-
-    const { userId } = req.query;
-
-    let query = `
-      SELECT bookings.*, users.username, users.email
-      FROM bookings
-      JOIN users ON bookings.userId = users.id
-    `;
-
-    const values = [];
-
-    if (userId) {
-      query += ' WHERE bookings.userId = ?';
-      values.push(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+        bookingId: null
+      });
     }
 
-    db.query(query, values, (err, results) => {
+    // Create booking
+    const newBooking = new Booking({
+      eventName,
+      eventMeta,
+      tickets,
+      pricePerTicket,
+      totalAmount,
+      userId
+    });
 
-      if (err) {
-        console.error("❌ Database query error (get bookings):", err.message);
+    const savedBooking = await newBooking.save();
 
-        return res.status(500).json({
-          error: 'Database error',
-          details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    res.status(201).json({
+      message: 'Booking created successfully',
+      bookingId: savedBooking._id.toString()
+    });
+
+  } catch (error) {
+    console.error("❌ Database error (create booking):", error.message);
+
+    res.status(500).json({
+      message: 'Database error',
+      bookingId: null,
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const getBookings = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    let filter = {};
+
+    if (userId) {
+      if (!isValidObjectId(userId)) {
+        return res.status(400).json({
+          error: 'A valid user ID is required'
         });
       }
 
-      res.json(results);
+      filter = { userId };
+    }
 
-    });
+    const bookings = await Booking.find(filter).populate('userId', 'username email');
+
+    res.json(bookings);
 
   } catch (error) {
-
-    console.error(error);
+    console.error("❌ Database error (get bookings):", error.message);
 
     res.status(500).json({
-      error: 'Internal server error'
+      error: 'Database error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-
   }
-
 };
 
-const getBookingById = (req, res) => {
-
+const getBookingById = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
-    db.query(
-      `SELECT bookings.*, users.username, users.email
-       FROM bookings
-       JOIN users ON bookings.userId = users.id
-       WHERE bookings.id = ?`,
-      [bookingId],
-      (err, results) => {
+    if (!isValidObjectId(bookingId)) {
+      return res.status(400).json({
+        error: 'A valid booking ID is required'
+      });
+    }
 
-        if (err) {
-          console.error(err);
+    const booking = await Booking.findById(bookingId).populate('userId', 'username email');
 
-          return res.status(500).json({
-            error: 'Database error'
-          });
-        }
+    if (!booking) {
+      return res.status(404).json({
+        error: 'Booking not found'
+      });
+    }
 
-        if (results.length === 0) {
-          return res.status(404).json({
-            error: 'Booking not found'
-          });
-        }
-
-        res.json(results[0]);
-
-      }
-    );
+    res.json(booking);
 
   } catch (error) {
-
-    console.error(error);
+    console.error("❌ Database error (get booking):", error.message);
 
     res.status(500).json({
-      error: 'Internal server error'
+      error: 'Database error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-
   }
-
 };
 
-const deleteBooking = (req, res) => {
-
+const deleteBooking = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
-    db.query(
-      'DELETE FROM bookings WHERE id = ?',
-      [bookingId],
-      (err, result) => {
+    if (!isValidObjectId(bookingId)) {
+      return res.status(400).json({
+        error: 'A valid booking ID is required'
+      });
+    }
 
-        if (err) {
-          console.error(err);
+    const booking = await Booking.findByIdAndDelete(bookingId);
 
-          return res.status(500).json({
-            error: 'Database error'
-          });
-        }
+    if (!booking) {
+      return res.status(404).json({
+        error: 'Booking not found'
+      });
+    }
 
-        if (result.affectedRows === 0) {
-          return res.status(404).send();
-        }
-
-        res.status(204).send();
-
-      }
-    );
+    res.status(204).send();
 
   } catch (error) {
-
-    console.error(error);
+    console.error("❌ Database error (delete booking):", error.message);
 
     res.status(500).json({
-      error: 'Internal server error'
+      error: 'Database error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-
   }
-
 };
 
 module.exports = {

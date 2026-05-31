@@ -1,20 +1,33 @@
-// Bookings Page JavaScript
+// My Bookings page JavaScript
 document.addEventListener('DOMContentLoaded', () => {
     loadUserBookings();
 });
 
+function getStoredUser() {
+    return JSON.parse(localStorage.getItem('eventifyUser') || 'null');
+}
+
+function getStoredUserId() {
+    const user = getStoredUser();
+    return user?.id || user?._id || null;
+}
+
+function getBookingId(booking) {
+    return booking?.id || booking?._id || booking?.bookingId || null;
+}
+
 async function loadUserBookings() {
     // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
+    const userId = getStoredUserId();
 
-    if (!user) {
+    if (!userId) {
         showNoBookings('Please sign in to view your bookings.');
         return;
     }
 
     try {
         // Fetch bookings for specific user
-        const response = await fetch(`${window.EVENTIFY_API_BASE_URL}/bookings?userId=${user.id}`, {
+        const response = await fetch(`${window.EVENTIFY_API_BASE_URL}/bookings?userId=${userId}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -51,7 +64,10 @@ function displayBookings(bookings) {
     bookingsList.style.flexWrap = 'wrap';
 
     // Create booking cards similar to event cards
-    bookingsList.innerHTML = bookings.map(booking => `
+    bookingsList.innerHTML = bookings.map(booking => {
+        const bookingId = getBookingId(booking);
+
+        return `
         <div class="movie">
             <div class="movie1">
                 <div class="event-card">
@@ -59,8 +75,7 @@ function displayBookings(bookings) {
                         <h3>${booking.eventName}</h3>
                         <div class="event-meta">
                             <p><strong>Date:</strong> ${booking.eventMeta || 'TBD'}</p>
-                            <p style="margin-top: 10px"><strong>Booking ID:</strong> #${booking.id}</p>
-                            <p style="margin-top: 10px"><strong>Booking Date:</strong> ${booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN', {
+                            <p style="margin-top: 10px"><strong>Booking Date:</strong> ${(booking.timestamp || booking.createdAt) ? new Date(booking.timestamp || booking.createdAt).toLocaleDateString('en-IN', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
@@ -78,13 +93,14 @@ function displayBookings(bookings) {
                         </div>
                     </div>
                     <div class="event-actions">
-                        <button class="book-btn" onclick="viewTicket('${booking.id}')">View Ticket</button>
-                        <button class="book-btn cancel-btn" onclick="cancelBooking('${booking.id}')">Cancel Booking</button>
+                        <button class="book-btn" onclick="viewTicket('${bookingId}')" ${bookingId ? '' : 'disabled'}>View Ticket</button>
+                        <button class="book-btn cancel-btn" onclick="cancelBooking('${bookingId}')" ${bookingId ? '' : 'disabled'}>Cancel Booking</button>
                     </div>
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function showNoBookings(message = null) {
@@ -108,6 +124,11 @@ let currentBookingData = null;
 
 async function viewTicket(bookingId) {
     console.log('Viewing ticket for booking ID:', bookingId);
+
+    if (!bookingId || bookingId === 'undefined' || bookingId === 'null') {
+        alert('Booking ID is missing. Please refresh the page and try again.');
+        return;
+    }
 
     try {
         // Fetch full booking details
@@ -234,7 +255,7 @@ function populateTicketModal(booking) {
     // Event Details
     modalElements.ticketEventName.textContent = booking.eventName || 'Event Name';
     modalElements.ticketEventMeta.textContent = booking.eventMeta || 'Date & Venue TBD';
-    modalElements.ticketBookingId.textContent = booking.bookingId || booking.id || 'N/A';
+    modalElements.ticketBookingId.textContent = getBookingId(booking) || 'N/A';
 
     // Booking Details
     modalElements.ticketTickets.textContent = booking.tickets || 1;
@@ -244,12 +265,12 @@ function populateTicketModal(booking) {
     modalElements.ticketPaymentStatus.textContent = booking.paymentStatus || 'Completed';
 
     // Customer Information
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
+    const user = getStoredUser();
     modalElements.ticketCustomerName.textContent = user?.username || user?.email || 'Customer Name';
     modalElements.ticketCustomerEmail.textContent = user?.email || 'customer@email.com';
 
     // Format booking date
-    const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN', {
+    const bookingDate = (booking.timestamp || booking.createdAt) ? new Date(booking.timestamp || booking.createdAt).toLocaleDateString('en-IN', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
@@ -272,7 +293,7 @@ function generateTicketQRCode(booking) {
 
     try {
         const ticketData = {
-            bookingId: booking.bookingId || booking.id || 'N/A',
+            bookingId: getBookingId(booking) || 'N/A',
             tickets: booking.tickets || 1
         };
 
@@ -382,8 +403,8 @@ function printTicket() {
 }
 
 function generateTicketText(booking) {
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
-    const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
+    const user = getStoredUser();
+    const bookingDate = (booking.timestamp || booking.createdAt) ? new Date(booking.timestamp || booking.createdAt).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
 
     return `
 +------------------------------------------------------------+
@@ -394,7 +415,7 @@ EVENT DETAILS
 --------------------------------------------------------------
 Event Name: ${booking.eventName || 'N/A'}
 Date & Venue: ${booking.eventMeta || 'TBD'}
-Booking ID: ${booking.bookingId || booking.id || 'N/A'}
+Booking ID: ${getBookingId(booking) || 'N/A'}
 
 BOOKING DETAILS
 --------------------------------------------------------------
@@ -423,8 +444,8 @@ IMPORTANT INSTRUCTIONS
 }
 
 function generateTicketHTML(booking) {
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
-    const bookingDate = booking.timestamp ? new Date(booking.timestamp).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
+    const user = getStoredUser();
+    const bookingDate = (booking.timestamp || booking.createdAt) ? new Date(booking.timestamp || booking.createdAt).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
 
     return `
 <!DOCTYPE html>
@@ -459,7 +480,7 @@ function generateTicketHTML(booking) {
                 <h3>Event Details</h3>
                 <div class="row"><span class="label">Event Name:</span><span class="value">${booking.eventName || 'N/A'}</span></div>
                 <div class="row"><span class="label">Date & Venue:</span><span class="value">${booking.eventMeta || 'TBD'}</span></div>
-                <div class="row"><span class="label">Booking ID:</span><span class="value">${booking.bookingId || booking.id || 'N/A'}</span></div>
+                <div class="row"><span class="label">Booking ID:</span><span class="value">${getBookingId(booking) || 'N/A'}</span></div>
             </div>
             
             <div class="section">

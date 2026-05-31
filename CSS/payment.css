@@ -9,7 +9,6 @@
 .navbar>:first-child img {
     position: absolute;
     top: -20px;
-    filter: none !important;
 }
 
 .nav-simple a {
@@ -34,7 +33,6 @@
 }
 
 .payment-container {
-    max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
 }
@@ -43,11 +41,13 @@
 .payment-progress {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     margin-bottom: 40px;
     background: var(--surface-muted);
     padding: 20px;
     border-radius: 15px;
     border: 1px solid var(--border-muted);
+    overflow: visible;
 }
 
 .progress-step {
@@ -67,7 +67,8 @@
     width: 100%;
     height: 2px;
     background: var(--border-muted);
-    transform: translateX(50%);
+    z-index: 0;
+    pointer-events: none;
 }
 
 .progress-step.completed::after {
@@ -116,7 +117,7 @@
 /* Payment Content */
 .payment-content {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 2fr;
     gap: 30px;
     align-items: start;
 }
@@ -128,6 +129,7 @@
     padding: 30px;
     box-shadow: var(--shadow-soft);
     border: 1px solid var(--border-soft);
+    font-size: 1.3rem;
 }
 
 .booking-summary h2 {
@@ -152,12 +154,12 @@
 .event-meta {
     color: var(--text-secondary);
     margin-bottom: 15px;
-    font-size: 1em;
+    font-size: 1.1em !important;
 }
 
 .booking-id {
     color: var(--text-muted);
-    font-size: 0.9em;
+    font-size: 1.1em;
     margin-bottom: 20px;
 }
 
@@ -579,15 +581,12 @@
 
     .payment-progress {
         flex-wrap: wrap;
+        gap: 8px 0;
     }
 
     .progress-step {
-        min-width: 150px;
-        margin-bottom: 10px;
-    }
-
-    .progress-step:not(:last-child)::after {
-        display: none;
+        min-width: 120px;
+        margin-bottom: 4px;
     }
 }
 
@@ -595,6 +594,10 @@
     .payment-container {
         margin: 20px auto;
         padding: 0 15px;
+    }
+
+    .progress-step:not(:last-child)::after {
+        display: none;
     }
 
     .booking-summary,
