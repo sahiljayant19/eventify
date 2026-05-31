@@ -189,45 +189,6 @@
             </div>
         </div>
 
-        <!-- Booking Modal -->
-        <div class="modal-overlay" id="bookingModal">
-            <div class="booking-box">
-                <span class="close-modal" id="closeBookingModal">&times;</span>
-
-                <h2 class="auth-title">Book Tickets</h2>
-                <p class="subtitle">Confirm your booking details</p>
-
-                <form id="bookingForm">
-                    <div class="input-group">
-                        <label>Event</label>
-                        <input type="text" id="bookingEventName" class="auth-input" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Location & Date</label>
-                        <input type="text" id="bookingEventMeta" class="auth-input" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Number of Tickets</label>
-                        <input type="number" id="bookingTickets" class="auth-input" min="1" max="10" value="1" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Price per Ticket</label>
-                        <input type="text" id="bookingPricePerTicket" class="auth-input" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Total Amount</label>
-                        <input type="text" id="bookingTotalAmount" class="auth-input" readonly>
-                    </div>
-
-                    <button type="submit" class="primary-btn">Confirm Booking</button>
-                </form>
-            </div>
-        </div>
-
     </header>
     <!-- END OF HEADER -->
 

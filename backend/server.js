@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 
@@ -60,8 +61,17 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const startServer = async () => {
+  try {
+    await connectDB();
+    
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
 
-  console.log(`Server running on port ${PORT}`);
-
-});
+startServer();

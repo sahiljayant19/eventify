@@ -1,17 +1,33 @@
-// Payment Page JavaScript
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Payment page loaded');
-    loadBookingDetails();
+// Payment logic (used on book-event.html)
+let paymentStatusCheckStarted = false;
+
+function getStoredUser() {
+    return JSON.parse(localStorage.getItem('eventifyUser') || 'null');
+}
+
+function getStoredUserId() {
+    const user = getStoredUser();
+    return user?.id || user?._id || null;
+}
+
+window.initPaymentPage = function initPaymentPage() {
+    console.log('Initializing payment step');
+    const loaded = loadBookingDetails();
+    if (!loaded) return;
+
     setupPaymentTabs();
-    // Add a small delay to ensure booking details are loaded before generating QR code
     setTimeout(() => {
         generateQRCode();
     }, 500);
-    startPaymentStatusCheck();
-    setupCardFormatting();
-});
 
-// Load booking details from localStorage or URL parameters
+    if (!paymentStatusCheckStarted) {
+        startPaymentStatusCheck();
+        paymentStatusCheckStarted = true;
+    }
+    setupCardFormatting();
+};
+
+// Load booking details from localStorage
 function loadBookingDetails() {
     console.log('Loading booking details...');
     const bookingData = JSON.parse(localStorage.getItem('pendingBooking'));
@@ -19,9 +35,11 @@ function loadBookingDetails() {
     console.log('Booking data:', bookingData);
 
     if (!bookingData) {
-        showPopupMessage('No Booking Data', 'No booking data found. Please start your booking again.', 'error');
-        window.location.href = 'index.html';
-        return;
+        showPageMessage('No booking data found. Please choose an event and try again.', 'error');
+        if (typeof window.showBookingStep === 'function') {
+            window.showBookingStep('details');
+        }
+        return false;
     }
 
     // Update summary with error handling
@@ -53,9 +71,11 @@ function loadBookingDetails() {
         localStorage.setItem('currentBookingId', bookingId);
 
         console.log('Booking details loaded successfully');
+        return true;
     } catch (error) {
         console.error('Error loading booking details:', error);
-        showPopupMessage('Error', 'Error loading booking details. Please try again.', 'error');
+        showPageMessage('Error loading booking details. Please try again.', 'error');
+        return false;
     }
 }
 
@@ -226,11 +246,15 @@ function confirmPayment() {
 // Save booking to backend
 async function saveBookingToBackend(bookingData, bookingId) {
     try {
-        const user = JSON.parse(localStorage.getItem('eventifyUser'));
+        const userId = getStoredUserId();
 
         // Log user info for debugging
-        console.log('Current user:', user);
-        console.log('User ID:', user?.id);
+        console.log('User ID:', userId);
+
+        if (!userId) {
+            showPageMessage('Please sign in again before saving your booking.', 'error');
+            return;
+        }
 
         const payload = {
             eventName: bookingData.eventName,
@@ -239,7 +263,7 @@ async function saveBookingToBackend(bookingData, bookingId) {
             pricePerTicket: bookingData.pricePerTicket,
             totalAmount: bookingData.totalAmount,
             bookingId: bookingId,
-            userId: user ? user.id : null,
+            userId,
             paymentMethod: bookingData.paymentMethod || 'UPI',
             paymentStatus: 'completed',
             timestamp: new Date().toISOString()
@@ -267,9 +291,9 @@ async function saveBookingToBackend(bookingData, bookingId) {
             try {
                 const errorData = JSON.parse(errorText);
                 console.error('Parsed error data:', errorData);
-                showPopupMessage('Booking Error', errorData.message || errorData.error || 'Failed to save booking', 'error');
+                showPageMessage(errorData.message || errorData.error || 'Failed to save booking', 'error');
             } catch {
-                showPopupMessage('Booking Error', `Failed to save booking. Status: ${response.status}`, 'error');
+                showPageMessage(`Failed to save booking. Status: ${response.status}`, 'error');
             }
             return;
         }
@@ -279,7 +303,7 @@ async function saveBookingToBackend(bookingData, bookingId) {
 
     } catch (error) {
         console.error('Network error saving booking:', error);
-        showPopupMessage('Network Error', 'Booking confirmed but failed to save to server. Please check your internet connection and ensure the backend is running.', 'error');
+        showPageMessage('Booking confirmed but failed to save to server. Please check your connection and ensure the backend is running.', 'error');
     }
 }
 
@@ -326,12 +350,12 @@ function processCardPayment() {
 
     // Basic validation
     if (!cardNumber || !expiryDate || !cvv || !cardholderName) {
-        showPopupMessage('Missing Information', 'Please fill in all card details', 'error');
+        showPageMessage('Please fill in all card details', 'error');
         return;
     }
 
     if (cardNumber.replace(/\s/g, '').length < 16) {
-        showPopupMessage('Invalid Card', 'Please enter a valid card number', 'error');
+        showPageMessage('Please enter a valid card number', 'error');
         return;
     }
 
@@ -350,7 +374,7 @@ function processNetBanking() {
     const bankSelect = document.getElementById('bankSelect');
 
     if (!bankSelect?.value) {
-        showPopupMessage('Bank Required', 'Please select your bank', 'error');
+        showPageMessage('Please select your bank', 'error');
         return;
     }
 
@@ -370,7 +394,7 @@ function confirmPaymentWithMethod(paymentMethod) {
     const bookingId = document.getElementById('bookingId')?.textContent;
 
     if (!bookingData || !bookingId) {
-        showPopupMessage('Booking Error', 'Booking information not found', 'error');
+        showPageMessage('Booking information not found', 'error');
         return;
     }
 
@@ -402,61 +426,27 @@ function confirmPaymentWithMethod(paymentMethod) {
     // Save booking to backend
     saveBookingToBackend(confirmationData, bookingId);
 
-    // Show success message and redirect to home
     setTimeout(() => {
-        showPopupMessage(
-            'Payment Successful!',
-            'Your booking has been confirmed. Click OK to go to the home page.',
-            'success',
-            () => {
-                localStorage.removeItem('pendingBooking');
-                window.location.href = 'index.html';
-            }
-        );
-    }, 2000);
+        if (typeof window.showBookingConfirmation === 'function') {
+            window.showBookingConfirmation(confirmationData);
+        }
+    }, 1500);
 }
 
-// Show themed popup message
-function showPopupMessage(title, message, type = 'success', callback = null) {
-    // Remove any existing popup and overlay
-    const existingPopup = document.querySelector('.eventify-popup');
-    const existingOverlay = document.querySelector('.popup-overlay');
-    if (existingPopup) existingPopup.remove();
-    if (existingOverlay) existingOverlay.remove();
+function showPageMessage(message, type = 'error') {
+    if (typeof showBookingPageMessage === 'function') {
+        showBookingPageMessage(message, type);
+        return;
+    }
 
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay';
+    const el = document.getElementById('bookingPageMessage');
+    if (el) {
+        el.textContent = message;
+        el.className = `booking-page-message visible ${type}`;
+        return;
+    }
 
-    const icon = type === 'success'
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-
-    const popup = document.createElement('div');
-    popup.className = 'eventify-popup';
-
-    popup.innerHTML = `
-        <div class="popup-icon-container ${type}">
-            ${icon}
-        </div>
-        <h3>${title}</h3>
-        <p>${message}</p>
-        <div class="popup-button-group">
-            <button class="popup-btn popup-btn-primary">OK</button>
-        </div>
-    `;
-
-    // Add click handler to OK button
-    const okButton = popup.querySelector('.popup-btn-primary');
-    okButton.addEventListener('click', () => {
-        popup.remove();
-        overlay.remove();
-        if (callback) callback();
-    });
-
-    // Add overlay and popup to body
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
+    alert(message);
 }
 
 // Format currency
