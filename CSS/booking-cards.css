@@ -15,6 +15,10 @@
     top: 0;
 }
 
+:root[data-theme="dark"] .navbar > :first-child img {
+    filter: invert(1);
+}
+
 
 
 .nav-simple a {

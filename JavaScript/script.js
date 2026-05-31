@@ -214,9 +214,8 @@ closeModal.addEventListener('click', () => { // close authentication modal when 
     authModal.style.display = 'none';
 });
 
-window.addEventListener('click', (e) => { // close authentication modal / booking modal when user clicks outside the modal
+window.addEventListener('click', (e) => { // close authentication modal when user clicks outside the modal
     if (e.target === authModal) authModal.style.display = 'none';
-    if (e.target === bookingModal) bookingModal.style.display = 'none';
 });
 
 
@@ -359,24 +358,11 @@ signOutBtn.addEventListener('click', () => {
 // ---------------- BOOKING FLOW ----------------
 
 const bookButtons = document.querySelectorAll('.book-btn');
-const bookingModal = document.getElementById('bookingModal');
-const closeBookingModal = document.getElementById('closeBookingModal');
-const bookingForm = document.getElementById('bookingForm');
-const bookingEventName = document.getElementById('bookingEventName');
-const bookingEventMeta = document.getElementById('bookingEventMeta');
-const bookingTickets = document.getElementById('bookingTickets');
-const bookingPricePerTicket = document.getElementById('bookingPricePerTicket');
-const bookingTotalAmount = document.getElementById('bookingTotalAmount');
 
 function parsePrice(text) {
-    // Expect formats like "₹999 onwards"
     const match = text.replace(/,/g, '').match(/(\d+(\.\d+)?)/);
     if (!match) return 0;
     return Number(match[1]);
-}
-
-function formatCurrency(amount) {
-    return `₹${amount.toLocaleString('en-IN')}`;
 }
 
 bookButtons.forEach((btn) => {
@@ -388,83 +374,20 @@ bookButtons.forEach((btn) => {
         const metaEl = card.querySelector('.location');
         const priceEl = card.querySelector('.price');
 
-
         const eventName = titleEl ? titleEl.textContent.trim() : 'Event';
         const eventMeta = metaEl ? metaEl.textContent.replace(/\s+/g, ' ').trim() : '';
-
         const priceText = priceEl ? priceEl.textContent.trim() : '';
-
         const price = parsePrice(priceText);
 
-        bookingEventName.value = eventName;
-        bookingEventMeta.value = eventMeta;
-        bookingTickets.value = 1;
-        bookingPricePerTicket.value = formatCurrency(price);
-        bookingTotalAmount.value = formatCurrency(price);
+        localStorage.removeItem('pendingBooking');
+        localStorage.setItem('selectedEvent', JSON.stringify({
+            eventName,
+            eventMeta,
+            pricePerTicket: price
+        }));
 
-        bookingModal.style.display = 'flex';
+        window.location.href = 'book-event.html';
     });
-});
-
-closeBookingModal.addEventListener('click', () => {
-    bookingModal.style.display = 'none';
-});
-
-bookingTickets.addEventListener('input', () => {
-    const priceText = bookingPricePerTicket.value;
-    const price = parsePrice(priceText);
-
-    if (bookingTickets.value === '') {
-        bookingTotalAmount.value = formatCurrency(0);
-        return;
-    }
-
-    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
-    bookingTickets.value = tickets;
-
-    const total = tickets * price;
-    bookingTotalAmount.value = formatCurrency(total);
-});
-
-bookingTickets.addEventListener('blur', () => {
-    const priceText = bookingPricePerTicket.value;
-    const price = parsePrice(priceText);
-    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
-    bookingTickets.value = tickets;
-
-    const total = tickets * price;
-    bookingTotalAmount.value = formatCurrency(total);
-});
-
-bookingForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
-    if (!user) {
-        alert('Please sign in to make a booking');
-        return;
-    }
-
-    const tickets = Math.min(10, Math.max(1, Number(bookingTickets.value) || 1));
-    bookingTickets.value = tickets;
-    const pricePerTicket = parsePrice(bookingPricePerTicket.value);
-    const totalAmount = tickets * pricePerTicket;
-
-    const bookingData = {
-        eventName: bookingEventName.value,
-        eventMeta: bookingEventMeta.value,
-        tickets,
-        pricePerTicket,
-        totalAmount,
-        userId: user.id
-    };
-
-    // Save booking data to localStorage for payment page
-    localStorage.setItem('pendingBooking', JSON.stringify(bookingData));
-
-    // Redirect to payment page
-    window.location.href = 'payment.html';
 });
 
 // ---------------- POPUP FUNCTIONS ----------------

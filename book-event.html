@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Event - Eventify</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/utility.css">
+    <link rel="stylesheet" href="CSS/effects.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
+    <link rel="stylesheet" href="CSS/mobile-performance.css">
+    <link rel="stylesheet" href="CSS/booking-flow.css">
+    <link rel="stylesheet" href="CSS/payment.css">
+    <link rel="stylesheet" href="CSS/booking-cards.css">
+    <link rel="shortcut icon" href="Resource/img/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="JavaScript/theme-init.js"></script>
+</head>
+
+<body class="book-event-page">
+    <!-- START OF HEADER -->
+    <header>
+        <nav class="navbar" id="nav">
+            <a href="index.html"><img src="Resource/img/logo.png" alt="logo" width="170"></a>
+            <div class="nav-simple">
+                <a href="index.html">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                    </svg>
+                    Back to Events
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+
+    <main>
+        <div id="bookingPageMessage" class="booking-page-message" role="alert"></div>
+
+        <h1 class="booking-flow-heading" id="bookingFlowHeading">Book Tickets</h1>
+
+        <div class="booking-flow-container">
+            <div class="payment-progress" id="bookingProgress">
+                <div class="progress-step" data-step="details">
+                    <div class="step-number">1</div>
+                    <span>Booking Details</span>
+                </div>
+                <div class="progress-step" data-step="payment">
+                    <div class="step-number">2</div>
+                    <span>Payment</span>
+                </div>
+                <div class="progress-step" data-step="confirmation">
+                    <div class="step-number">3</div>
+                    <span>Confirmation</span>
+                </div>
+            </div>
+
+            <div id="bookingDetailsStep" class="booking-details-step">
+                <div class="booking-page-card">
+                    <p class="booking-card-lead">Confirm your booking details</p>
+                    <form id="bookingForm">
+                        <div class="input-group">
+                            <label>Event</label>
+                            <input type="text" id="bookingEventName" class="auth-input" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Location & Date</label>
+                            <input type="text" id="bookingEventMeta" class="auth-input" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Number of Tickets</label>
+                            <input type="number" id="bookingTickets" class="auth-input" max="10" step="1" value="1" inputmode="numeric" placeholder="1–10" aria-label="Number of tickets">
+                        </div>
+                        <div class="input-group">
+                            <label>Price per Ticket</label>
+                            <input type="text" id="bookingPricePerTicket" class="auth-input" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Total Amount</label>
+                            <input type="text" id="bookingTotalAmount" class="auth-input" readonly>
+                        </div>
+                        <div class="booking-flow-actions">
+                            <button type="button" class="secondary-btn" id="cancelBookingFlowBtn">Cancel</button>
+                            <button type="submit" class="primary-btn">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="paymentStep" class="payment-container" style="display: none;">
+                <div class="payment-content">
+                    <div class="booking-summary">
+                        <h2>Booking Summary</h2>
+                        <div class="summary-card">
+                            <div class="event-info">
+                                <h3 id="summaryEventName">Loading...</h3>
+                                <p class="event-meta" id="summaryEventMeta">Loading...</p>
+                                <p class="booking-id">Booking ID: <span id="bookingId">Loading...</span></p>
+                            </div>
+                            <div class="ticket-details">
+                                <div class="ticket-row">
+                                    <span>Tickets:</span>
+                                    <span id="summaryTickets">Loading...</span>
+                                </div>
+                                <div class="ticket-row">
+                                    <span>Price per Ticket:</span>
+                                    <span id="summaryPricePerTicket">Loading...</span>
+                                </div>
+                                <div class="ticket-row total">
+                                    <span>Total Amount:</span>
+                                    <span id="summaryTotalAmount">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="secondary-btn" id="backToDetailsBtn" style="margin-top: 16px; width: 100%;">Edit Booking Details</button>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h2>Choose Payment Method</h2>
+                        <div class="payment-tabs">
+                            <button class="tab-btn active" data-method="upi" type="button">
+                                <img src="Resource/svg/upi.svg" alt="UPI" class="payment-icon">
+                                UPI/QR Code
+                            </button>
+                            <button class="tab-btn" data-method="card" type="button">
+                                <img src="Resource/svg/card.svg" alt="Card" class="payment-icon">
+                                Credit/Debit Card
+                            </button>
+                            <button class="tab-btn" data-method="netbanking" type="button">
+                                <img src="Resource/svg/bank.svg" alt="Bank" class="payment-icon">
+                                Net Banking
+                            </button>
+                        </div>
+
+                        <div class="payment-content-section active" id="upi-payment">
+                            <div class="qr-section">
+                                <h3>Scan QR Code to Pay</h3>
+                                <div class="qr-container">
+                                    <div class="qr-code">
+                                        <div id="qrcode" style="text-align: center;"></div>
+                                    </div>
+                                    <div class="qr-details">
+                                        <p class="upi-id">UPI ID: <strong>9079184709@ybl</strong></p>
+                                        <p class="amount">Amount: <strong id="qrAmount">Loading...</strong></p>
+                                    </div>
+                                </div>
+                                <div class="payment-instructions">
+                                    <h4>How to Pay:</h4>
+                                    <ol>
+                                        <li>Open any UPI app (PhonePe, GPay, Paytm, etc.)</li>
+                                        <li>Scan the QR code above</li>
+                                        <li>Verify the amount and pay</li>
+                                        <li>Click "I have completed the payment" when done</li>
+                                    </ol>
+                                </div>
+                                <div class="payment-status">
+                                    <div class="status-pending" id="paymentStatus">
+                                        <div class="spinner"></div>
+                                        <p>Waiting for payment...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-content-section" id="card-payment">
+                            <div class="card-form">
+                                <div class="card-inputs">
+                                    <div class="input-group">
+                                        <label>Card Number</label>
+                                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="input-group">
+                                            <label>Expiry Date</label>
+                                            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+                                        </div>
+                                        <div class="input-group">
+                                            <label>CVV</label>
+                                            <input type="text" id="cvv" placeholder="123" maxlength="3">
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Cardholder Name</label>
+                                        <input type="text" id="cardholderName" placeholder="John Doe">
+                                    </div>
+                                </div>
+                                <div class="accepted-cards">
+                                    <span>We accept:</span>
+                                    <div class="card-types">
+                                        <img src="Resource/svg/visa.svg" alt="Visa" class="card-type">
+                                        <img src="Resource/svg/mastercard.svg" alt="Mastercard" class="card-type">
+                                        <img src="Resource/svg/rupay.svg" alt="RuPay" class="card-type">
+                                    </div>
+                                </div>
+                                <button class="pay-btn" type="button" onclick="processCardPayment()">
+                                    Pay <span id="cardAmount">Loading...</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="payment-content-section" id="netbanking-payment">
+                            <div class="bank-selection">
+                                <div class="input-group">
+                                    <label>Select Bank</label>
+                                    <select id="bankSelect">
+                                        <option value="">Choose your bank</option>
+                                        <option value="sbi">State Bank of India</option>
+                                        <option value="hdfc">HDFC Bank</option>
+                                        <option value="icici">ICICI Bank</option>
+                                        <option value="pnb">Punjab National Bank</option>
+                                        <option value="axis">Axis Bank</option>
+                                        <option value="kotak">Kotak Bank</option>
+                                    </select>
+                                </div>
+                                <div class="bank-info">
+                                    <p>You will be redirected to your bank's secure payment gateway</p>
+                                </div>
+                                <button class="pay-btn" type="button" onclick="processNetBanking()">
+                                    Pay <span id="bankAmount">Loading...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="confirmationStep" class="confirmation-step" style="display: none;">
+                <div class="confirmation-card">
+                    <img src="Resource/svg/check.svg" alt="Success" class="status-icon">
+                    <h2>Booking Confirmed!</h2>
+                    <p>Your payment was successful. Your tickets are ready.</p>
+                    <div class="confirmation-details" id="confirmationDetails"></div>
+                    <div class="confirmation-actions">
+                        <a href="bookings.html" class="secondary-btn" id="viewMyBookingsAfterConfirm">View My Bookings</a>
+                        <a href="index.html" class="primary-btn">Browse More Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="JavaScript/api-config.js"></script>
+    <script src="JavaScript/payment.js"></script>
+    <script src="JavaScript/book-event.js"></script>
+</body>
+
+</html>

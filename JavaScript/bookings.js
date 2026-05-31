@@ -1,4 +1,4 @@
-// Bookings Page JavaScript
+// My Bookings page JavaScript
 document.addEventListener('DOMContentLoaded', () => {
     loadUserBookings();
 });
