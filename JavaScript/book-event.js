@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initBookingFlow();
 });
 
+function getStoredUser() {
+    return JSON.parse(localStorage.getItem('eventifyUser') || 'null');
+}
+
+function getStoredUserId() {
+    const user = getStoredUser();
+    return user?.id || user?._id || null;
+}
+
 function initBookingFlow() {
     const params = new URLSearchParams(window.location.search);
     const step = params.get('step');
@@ -32,8 +41,7 @@ function initBookingFlow() {
         return;
     }
 
-    const user = JSON.parse(localStorage.getItem('eventifyUser'));
-    if (!user) {
+    if (!getStoredUserId()) {
         showBookingPageMessage('Please <a href="index.html">sign in</a> on the home page before booking.', 'error');
         return;
     }
@@ -189,8 +197,8 @@ function setupBookingForm() {
     bookingForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const user = JSON.parse(localStorage.getItem('eventifyUser'));
-        if (!user) {
+        const userId = getStoredUserId();
+        if (!userId) {
             showBookingPageMessage('Please <a href="index.html">sign in</a> before booking.', 'error');
             return;
         }
@@ -206,7 +214,7 @@ function setupBookingForm() {
             tickets,
             pricePerTicket,
             totalAmount,
-            userId: user.id
+            userId
         };
 
         localStorage.setItem('pendingBooking', JSON.stringify(bookingData));

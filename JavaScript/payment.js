@@ -1,6 +1,15 @@
 // Payment logic (used on book-event.html)
 let paymentStatusCheckStarted = false;
 
+function getStoredUser() {
+    return JSON.parse(localStorage.getItem('eventifyUser') || 'null');
+}
+
+function getStoredUserId() {
+    const user = getStoredUser();
+    return user?.id || user?._id || null;
+}
+
 window.initPaymentPage = function initPaymentPage() {
     console.log('Initializing payment step');
     const loaded = loadBookingDetails();
@@ -237,11 +246,15 @@ function confirmPayment() {
 // Save booking to backend
 async function saveBookingToBackend(bookingData, bookingId) {
     try {
-        const user = JSON.parse(localStorage.getItem('eventifyUser'));
+        const userId = getStoredUserId();
 
         // Log user info for debugging
-        console.log('Current user:', user);
-        console.log('User ID:', user?.id);
+        console.log('User ID:', userId);
+
+        if (!userId) {
+            showPageMessage('Please sign in again before saving your booking.', 'error');
+            return;
+        }
 
         const payload = {
             eventName: bookingData.eventName,
@@ -250,7 +263,7 @@ async function saveBookingToBackend(bookingData, bookingId) {
             pricePerTicket: bookingData.pricePerTicket,
             totalAmount: bookingData.totalAmount,
             bookingId: bookingId,
-            userId: user ? user.id : null,
+            userId,
             paymentMethod: bookingData.paymentMethod || 'UPI',
             paymentStatus: 'completed',
             timestamp: new Date().toISOString()
