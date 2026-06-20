@@ -2,13 +2,13 @@
 
 ![Eventify Banner](Resource/img/readme-banner.png)
 
-Eventify is a full-stack event booking web application where users can browse events, create an account, book tickets, view their bookings, and open generated ticket details. The project is built with a static HTML/CSS/JavaScript frontend, a Node.js + Express backend, and a MySQL database.
+Eventify is a full-stack event booking web application where users can browse events, create an account, book tickets, view their bookings, and open generated ticket details. The project is built with a static HTML/CSS/JavaScript frontend, a Node.js + Express backend, and a MongoDB database.
 
 The live application is deployed with:
 
 - Frontend: Vercel
 - Backend API: Render
-- Database: Aiven MySQL
+- Database: MongoDB Atlas
 
 ## Live Link
 
@@ -27,7 +27,7 @@ The live application is deployed with:
 - Booking cancellation
 - Light and dark theme support
 - Mobile responsive navigation and layouts
-- REST API connected to a cloud MySQL database
+- REST API connected to a MongoDB database
 
 ## Tech Stack
 
@@ -42,7 +42,7 @@ The live application is deployed with:
 
 - Node.js
 - Express.js
-- mysql2
+- mongoose
 - bcryptjs
 - jsonwebtoken
 - dotenv
@@ -50,8 +50,8 @@ The live application is deployed with:
 
 ### Database
 
-- MySQL
-- Aiven cloud database
+- MongoDB
+- MongoDB Atlas
 
 ## Project Structure
 
@@ -79,7 +79,6 @@ eventify/
 │   ├── server.js
 │   ├── package.json
 │   └── .env.example
-├── Eventify DB.session.sql
 └── README.md
 ```
 
@@ -101,7 +100,7 @@ When running locally, the frontend calls `http://localhost:5000/api`. When deplo
 
 - Node.js 16 or later
 - npm
-- MySQL database, local or hosted
+- MongoDB database, local or MongoDB Atlas
 - A static file server for the frontend, such as VS Code Live Server or `npx serve`
 
 ### 1. Clone the Repository
@@ -113,17 +112,7 @@ cd eventify
 
 ### 2. Set Up the Database
 
-Create a MySQL database named `eventify`, then run the SQL from [Eventify DB.session.sql](Eventify%20DB.session.sql).
-
-```sql
-CREATE DATABASE eventify;
-USE eventify;
-```
-
-The schema creates:
-
-- `users`: stores account details and password hashes
-- `bookings`: stores booking records linked to users
+Set up a MongoDB database (either locally or on MongoDB Atlas). There is no SQL schema setup required, as MongoDB dynamically creates databases and collections.
 
 ### 3. Configure Backend Environment Variables
 
@@ -137,21 +126,17 @@ cp .env.example .env
 Update the values:
 
 ```env
-PORT=8080
+PORT=5000
 NODE_ENV=development
 
 CLIENT_URL=http://127.0.0.1:5500
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_mysql_password
-DB_NAME=eventify
-DB_PORT=3306
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/eventify?retryWrites=true&w=majority&appName=eventify-cluster
 
 JWT_SECRET=replace_with_a_strong_secret
 ```
 
-For Aiven MySQL, use the host, port, username, password, and database name from the Aiven service console. The backend enables MySQL SSL in [backend/db.js](backend/db.js).
+For MongoDB Atlas, replace `<username>`, `<password>`, and `<cluster-host>` with your Atlas credentials. Make sure to URL-encode your password if it contains special characters.
 
 ### 4. Install and Run the Backend
 
@@ -163,13 +148,13 @@ npm run dev
 The backend runs on:
 
 ```text
-http://localhost:8080
+http://localhost:5000
 ```
 
 Health check:
 
 ```text
-http://localhost:8080/api/health
+http://localhost:5000/api/health
 ```
 
 ### 5. Run the Frontend
@@ -188,14 +173,10 @@ Backend variables used by the current code:
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `PORT` | No | Backend port. Defaults to `8080`. |
+| `PORT` | No | Backend port. Defaults to `5000`. |
 | `NODE_ENV` | No | Runtime environment label. |
 | `CLIENT_URL` | No | Frontend URL reserved for CORS allowlist configuration. |
-| `DB_HOST` | Yes | MySQL host. |
-| `DB_USER` | Yes | MySQL username. |
-| `DB_PASSWORD` | Yes | MySQL password. |
-| `DB_NAME` | Yes | MySQL database name. |
-| `DB_PORT` | Yes | MySQL port. |
+| `MONGODB_URI` | Yes | MongoDB connection URI string. |
 | `JWT_SECRET` | Yes | Secret key used to sign JWTs. |
 
 ## API Endpoints
@@ -287,33 +268,23 @@ Start Command: npm start
 Add the backend environment variables in Render:
 
 ```env
-PORT=8080
+PORT=5000
 NODE_ENV=production
 CLIENT_URL=https://eventify-booking-app.vercel.app
-DB_HOST=your-aiven-host
-DB_USER=your-aiven-user
-DB_PASSWORD=your-aiven-password
-DB_NAME=your-aiven-database
-DB_PORT=your-aiven-port
+MONGODB_URI=your-mongodb-atlas-uri
 JWT_SECRET=your-production-jwt-secret
 ```
 
-### MySQL on Aiven
+### MongoDB Atlas
 
-Create a MySQL service in Aiven, create/import the `eventify` database schema, then copy the connection values into Render environment variables.
-
-The schema file is:
-
-```text
-Eventify DB.session.sql
-```
+Create a MongoDB Atlas cluster, create a database named `eventify`, and retrieve your connection URI string. Add it as the `MONGODB_URI` environment variable in Render.
 
 ## Security Notes
 
 - Keep `.env` files private.
 - Use a strong `JWT_SECRET` in production.
 - Do not commit database credentials.
-- The backend uses parameterized SQL queries through `mysql2`.
+- The backend uses Mongoose ORM to securely interact with MongoDB.
 - Passwords are stored as bcrypt hashes.
 
 ## Useful Commands
@@ -340,7 +311,7 @@ npx serve .
 
 ## Project Goal
 
-Eventify demonstrates a practical full-stack workflow: a responsive frontend, REST API, authentication, booking persistence, and cloud deployment across Vercel, Render, and Aiven MySQL.
+Eventify demonstrates a practical full-stack workflow: a responsive frontend, REST API, authentication, booking persistence, and cloud deployment across Vercel, Render, and MongoDB Atlas.
 
 ## Live Link
 https://eventify-booking-app.vercel.app/
